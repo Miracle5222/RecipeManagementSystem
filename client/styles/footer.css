@@ -1,0 +1,11 @@
+footer div {
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+footer {
+  background-color: bisque;
+  border-top: 5px solid #7e5b53;
+}

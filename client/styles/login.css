@@ -1,0 +1,20 @@
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-image: url("../assets/images/login.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.login-form {
+  border-radius: 8px;
+  height: 400px;
+  width: 320px;
+  background-color: #ffff;
+}
+.button {
+  background-color: #ffff;
+  color: #dc2901;
+}
