@@ -143,18 +143,8 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark sidebar-link" href="pages-profile.html" aria-expanded="false"><i class="mdi mdi-account-network"></i><span class="hide-menu">Profile</span></a>
                         </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="table-basic.html" aria-expanded="false"><i class="mdi mdi-border-all"></i><span class="hide-menu">Table</span></a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="icon-material.html" aria-expanded="false"><i class="mdi mdi-face"></i><span class="hide-menu">Icon</span></a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="starter-kit.html" aria-expanded="false"><i class="mdi mdi-file"></i><span class="hide-menu">Blank</span></a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="error-404.html" aria-expanded="false"><i class="mdi mdi-alert-outline"></i><span class="hide-menu">404</span></a>
-                        </li>
+
+
                     </ul>
                 </nav>
                 <!-- End Sidebar navigation -->
@@ -224,6 +214,20 @@
                     </div>
                 </div>
                 <div class="container ">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <!-- <?php include  "./process/deleteRecipe.php" ?> -->
+                            <?php
+                            if (isset($success)) {
+                                echo $success;
+                            }
+                            if (isset($error)) {
+                                echo $error;
+                            }
+                            ?>
+                        </div>
+                    </div>
                     <div class="row bg-light p-4">
 
                         <table id="example" class="display " style="width:100%">
@@ -236,8 +240,8 @@
                                     <th>date_created</th>
                                     <th>Difficulty Level</th>
                                     <th>Cuisine</th>
-                                    <th>Video ID</th>
-                                    <th>Image</th>
+                                    <!-- <th>Video ID</th> -->
+                                    <th>Main Ingridients</th>
                                     <th>Edit</th>
                                 </tr>
                             </thead>
@@ -253,19 +257,23 @@
 
                                 ?>
                                         <tr>
-                                            <td><?= $row['recipe_id'] ?></td>
+                                            <td> <a href="recipeInfo.php?id=<?= $row['recipe_id'] ?>&image=<?= $row['image'] ?>" class=" btn btn-dark text-white">View Recipe</a></td>
                                             <td><?= $row['title'] ?></td>
-                                            <td><?= $row['description'] ?></td>
+                                            <td><span class="d-block text-truncate" style="max-width: 150px;">
+                                                    <?= $row['description'] ?>
+                                                </span></td>
                                             <td><?= $row['type'] ?></td>
                                             <td><?= $row['date_created'] ?></td>
                                             <td><?= $row['difficulty_level'] ?></td>
                                             <td><?= $row['cuisine'] ?></td>
-                                            <td><?= $row['video'] ?></td>
-                                            <td><?= $row['image'] ?></td>
+                                            <!-- <td><?= $row['video'] ?></td> -->
+                                            <td><?= $row['mainIngridients'] ?></td>
+
                                             <td>
-                                                <div class="d-flex justify-content-between align-items-center flex-row">
+                                                <div class="d-flex justify-content-between align-items-center flex-row ">
                                                     <a href="editRecipes.php?id=<?= $row['recipe_id'] ?>&image=<?= $row['image'] ?>" class="mx-2 btn btn-info">Edit</a>
-                                                    <a href="" class=" btn btn-danger text-white">Delete</a>
+                                                    <a onclick="confirm('are you sure you want to delete this recipe?')" href="./process/deleteRecipe.php?recipe_id=<?= $row['recipe_id'] ?>" class="mx-2   btn btn-danger text-white">Delete</a>
+                                                    <!-- <a href="./addIngridients.php?recipeId=<?= $row['recipe_id'] ?>" class=" btn btn-dark text-white">Ingridients</a> -->
                                                 </div>
                                             </td>
                                         </tr>
@@ -273,7 +281,6 @@
 
                                     }
                                 } else {
-                                    echo "0 results";
                                 }
                                 $conn->close(); ?>
 
@@ -306,6 +313,7 @@
         </div>
 
     </div>
+
     <script>
         $(document).ready(function() {
             $('#example').DataTable();

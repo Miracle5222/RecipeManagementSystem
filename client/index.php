@@ -18,7 +18,7 @@ session_start();
                         <div class="dropdown-menu border-0 orange">
                             <a class="dropdown-item" href="./pages/recipes.php?recipe=breakfast">Breakfast</a>
                             <a class="dropdown-item" href="./pages/recipes.php?recipe=Dinner">Dinner</a>
-                            <a class="dropdown-item" href="./pages/recipes.php?recipe=Dessert">Dessert</a>
+                      
                             <!-- <div class="dropdown-divider"></div> -->
                             <a class="dropdown-item" href="./pages/recipes.php?recipe=Lunch">Lunch</a>
 

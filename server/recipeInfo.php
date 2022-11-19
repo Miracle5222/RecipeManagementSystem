@@ -133,6 +133,7 @@
                                 <span class="hide-menu m-l-5">Add New Recipes</span>
                             </a>
                         </li>
+
                         <!-- User Profile-->
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark sidebar-link" href="index.html" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a>
@@ -155,7 +156,7 @@
             <div class="page-breadcrumb">
                 <div class="row align-items-center">
                     <div class="col-5">
-                        <h4 class="page-title">Edit Recipe</h4>
+                        <h4 class="page-title">Recipe Information</h4>
                     </div>
                 </div>
             </div>
@@ -171,8 +172,11 @@
                 </div>
                 <div class="container ">
                     <div class="row bg-light p-4">
-                        <div class="col-md-2"></div>
+
                         <div class="col-md-8 ">
+                            <div class="card p-4">
+                                <img class="d-block w-100 image" src="<?= "./../server/uploads/images/$_GET[image]" ?>" alt="recipe">
+                            </div>
                             <?php
 
                             if (isset($_POST['submit'])) {
@@ -216,6 +220,7 @@
                                 }
                             }
                             ?>
+
                             <div class="card p-4">
                                 <?php
                                 if (isset($_GET['id'])) {
@@ -308,7 +313,248 @@
 
                             </div>
                         </div>
-                        <div class="col-md-2"></div>
+                        <div class="col-md-4">
+                            <?php
+                            if (isset($_GET['deleteIngredients'])) {
+
+                                $sql = "delete from ingridient_tbl where  ingridient_id = '$_GET[deleteIngredients]'";
+                                if ($conn->query($sql) === TRUE) { ?>
+
+                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                        <strong>Ingredients Deleted!</strong>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+
+                                <?php } else { ?>
+                                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                        <strong>Failed to delete Ingredients!</strong>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                            <?php
+                                }
+                            }
+                            ?>
+                            <?php
+
+                            if (isset($_POST['submitIngredients'])) {
+
+                                $recipe = $_POST['recipe'];
+                                $Ingredients = $_POST['Ingredients'];
+
+
+                                $ingredientsQuery = "insert into ingridient_tbl (ingridient_name,recipe_id) values ('$Ingredients','$recipe')";
+                                $iquery = mysqli_query($conn, $ingredientsQuery);
+
+                                if ($iquery) { ?>
+                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                        <strong>Success!</strong> Ingredients added successfully.
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+
+                                <?php
+
+                                } else { ?>
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <strong> Failed to add Ingredients</strong>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                            <?php }
+                            }
+                            ?>
+                            <div class="card  d-flex justify-content-center align-items-center flex-row">
+                                <h3 class="text-info p-4 text-center">Ingredients</h3>
+                                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModals">Add Ingredients</button>
+                                <div class="modal fade" id="exampleModals" tabindex="-1" aria-labelledby="exampleModalLabels" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Ingredients</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form class="form-horizontal form-material" method="POST" enctype="multipart/form-data">
+                                                    <div class="mb-3">
+
+                                                        <label for="recipe" class="form-label">Recipe ID</label>
+                                                        <?php if (isset($_GET['id'])) { ?>
+                                                            <input type="text" class="form-control" name="recipe" value="<?= $_GET['id'] ?>" placeholder="Recipe ID">
+                                                        <?php } else { ?>
+
+                                                            <input type="text" class="form-control" name="recipe" placeholder="Recipe ID">
+                                                        <?php  } ?>
+
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="Ingredients" class="form-label">Ingredients</label>
+                                                        <input type="text" class="form-control" name="Ingredients" placeholder="Ingredients..">
+                                                    </div>
+
+
+
+
+
+                                            </div>
+                                            <div class="modal-footer">
+
+                                                <div class="mb-3">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <input type="submit" class="btn btn-success text-white" name="submitIngredients" value="Submit">
+                                                </div>
+
+                                            </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <!-- <th scope="col">ID</th> -->
+                                        <th scope="col">Ingredients</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+
+                                    $sql = "SELECT * FROM ingridient_tbl where  recipe_id = '$_GET[id]' ";
+                                    $result = $conn->query($sql);
+
+                                    if ($result->num_rows > 0) {
+                                        // output data of each row
+                                        while ($row = $result->fetch_assoc()) {
+
+                                    ?>
+                                            <tr>
+
+                                                <!-- <td><?= $row['ingridient_id'] ?></td> -->
+                                                <td><?= $row['ingridient_name'] ?></td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="text-info fw-semibold px-4">Edit</a> <a href="recipeInfo.php?id=<?= $_GET['id'] ?>&deleteIngredients=<?= $row['ingridient_id'] ?>&image=<?= $_GET['image'] ?>" class="text-danger fw-semibold">Delete</a>
+                                                    </div>
+                                                </td>
+
+
+
+                                            </tr>
+                                        <?php
+
+                                        }
+                                    } else { ?>
+                                        <tr>
+
+                                            <td class="w-100 text-center " colspan="2">No Ingredients Available</td>
+
+                                        </tr>
+                                    <?php }
+                                    ?>
+                                </tbody>
+                            </table>
+                            <?php
+                            if (isset($_GET['deleteDirections'])) {
+
+                                $sql = "delete from directions_tbl where  directions_id = '$_GET[deleteDirections]'";
+                                if ($conn->query($sql) === TRUE) { ?>
+
+                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                        <strong>Directions Deleted!</strong>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+
+                                <?php } else { ?>
+                                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                        <strong>Failed to delete Directions!</strong>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                            <?php
+                                }
+                            }
+                            ?>
+                            <div class="card d-flex justify-content-center align-items-center flex-row ">
+                                <h3 class="text-info p-4 text-center">Directions</h3>
+                                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Directions</button>
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Directions</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form class="form-horizontal form-material" action="./process/addDirections.php?id=<?= $_GET['id'] ?>&image=<?= $_GET['image'] ?>" method="POST" enctype="multipart/form-data">
+                                                    <div class="mb-3">
+
+                                                        <label for="recipe" class="form-label">Recipe ID</label>
+                                                        <?php if (isset($_GET['id'])) { ?>
+                                                            <input type="text" class="form-control" name="recipe" value="<?= $_GET['id'] ?>" placeholder="Recipe ID">
+                                                        <?php } else { ?>
+
+                                                            <input type="text" class="form-control" name="recipe" placeholder="Recipe ID">
+                                                        <?php  } ?>
+
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="steps" class="form-label">Step</label>
+                                                        <input type="text" class="form-control" name="steps" placeholder="steps">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="direction" class="form-label">Direction</label>
+                                                        <input type="text" class="form-control" name="direction" placeholder="direction..">
+                                                    </div>
+
+
+
+
+                                            </div>
+                                            <div class="modal-footer">
+
+                                                <div class="mb-3">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <input type="submit" class="btn btn-primary text-white" name="submit" value="Submit">
+                                                </div>
+
+                                            </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <ol class="list-group list-group-numbered">
+
+
+                                <?php
+
+                                $sql = "SELECT * FROM directions_tbl where  recipe_id = '$_GET[id]' ";
+                                $result = $conn->query($sql);
+
+                                if ($result->num_rows > 0) {
+                                    // output data of each row
+                                    while ($row = $result->fetch_assoc()) {
+
+                                ?>
+
+                                        <li class="list-group-item fs-4 fw-bold border-0 ">Step:<?= $row['heading'] ?></li>
+                                        <li class="list-group-item border-0 fs-5"><?= $row['directions'] ?>
+                                            <br>
+                                            <a href="editDirections.php?id=<?= $_GET['id'] ?>&d_Id=<?= $row['directions_id'] ?>&image=<?= $_GET['image'] ?> " class="px-2">
+                                                Edit</a>
+                                            <a href="recipeInfo.php?id=<?= $_GET['id'] ?>&deleteDirections=<?= $row['directions_id'] ?>&image=<?= $_GET['image'] ?>" class="text-danger">
+                                                Delete</a>
+                                        </li>
+
+                                    <?php
+
+                                    }
+                                } else { ?>
+                                    <li class="list-group-item border-0 text-center fs-4">No Directions Available</li>
+                                <?php  }
+                                $conn->close(); ?>
+                            </ol>
+
+                        </div>
+
                     </div>
 
                 </div>

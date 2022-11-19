@@ -162,45 +162,26 @@
                         if (isset($_POST['submit'])) {
 
                             $recipe = $_POST['recipe'];
-                            $description = "$_POST[description]";
-                            $description =  str_replace("'", "",  "$description");
-                            $type = $_POST['type'];
-                            $date = $_POST['date'];
-                            $level = $_POST['level'];
-                            $cuisine = $_POST['cuisine'];
-                            $video = $_POST['video'];
-                            $mainIngridients = $_POST['mainIngridients'];
+                            $Ingredients = $_POST['Ingredients'];
 
 
+                            $ingredientsQuery = "insert into ingridient_tbl (ingridient_name,recipe_id) values ('$Ingredients','$recipe')";
+                            $iquery = mysqli_query($conn, $ingredientsQuery);
 
-                            if (isset($_FILES['image']['name'])) {
+                            if ($iquery) { ?>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <strong>Success!</strong> Ingredients added successfully.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
 
-                                $file_name = $_FILES['image']['name'];
+                            <?php
 
-
-                                $file_tmp = $_FILES['image']['tmp_name'];
-                                // $filePath =  "./uploads/images/$file_name";
-
-                                move_uploaded_file($file_tmp, "./uploads/images/" . $file_name);
-
-                                $addquerry = "insert into recipe_tbl(title,description,type,date_created,difficulty_level,cuisine,video,image,mainIngridients) values ('$recipe','$description','$type','$date','$level ','$cuisine','$video','$file_name','$mainIngridients')";
-                                $iquery = mysqli_query($conn, $addquerry);
-
-                                if ($iquery) { ?>
-                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                        <strong>Success!</strong> Recipe added successfully.
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
-
-                                <?php
-
-                                } else { ?>
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                        <strong> Add Recipe Failed!</strong>
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
+                            } else { ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <strong> Failed to add Ingredients</strong>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
                         <?php }
-                            }
                         }
                         ?>
                     </div>
@@ -209,76 +190,27 @@
 
                     <div class="col-sm-5">
                         <div class="card ">
-                            <h2 class="p-4 text-info text-center">Add Recipes</h2>
+                            <h2 class="p-4 text-info text-center">Add Ingridients</h2>
                         </div>
                         <div class="card p-4">
                             <form class="form-horizontal form-material" method="POST" enctype="multipart/form-data">
                                 <div class="mb-3">
-                                    <label for="recipe" class="form-label">Recipe</label>
-                                    <input type="text" class="form-control" required name="recipe" placeholder="Chicken curry..">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="description" class="form-label">Description</label>
-                                    <input type="text" class="form-control" required name="description" placeholder="Description..">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="type" class="form-label">Type</label>
 
-                                    <select class="form-select" aria-label="Default select example" required name="type">
-                                        <option selected>Select Type</option>
-                                        <option value="Breakfast">Breakfast</option>
-                                        <option value="Dinner">Dinner</option>
-                                        <option value="Lunch">Lunch</option>
-                                        <option value="Desserts">Desserts</option>
-                                        <option value="Appetizer & Snack">Appetizer & Snack</option>
+                                    <label for="recipe" class="form-label">Recipe ID</label>
+                                    <?php if (isset($_GET['recipeId'])) { ?>
+                                        <input type="text" class="form-control" name="recipe" value="<?= $_GET['recipeId'] ?>" placeholder="Recipe ID">
+                                    <?php } else { ?>
 
-
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="date" class="form-label">Date</label>
-                                    <input type="date" class="form-control" required name="date">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="level" class="form-label">Difficulty Level</label>
-                                    <select class="form-select" aria-label="Default select example" required name="level">
-                                        <option selected>Select Level</option>
-                                        <option value="easy">Easy</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="hard">Hard</option>
-
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="cuisine" class="form-label">Cuisine</label>
-
-                                    <select class="form-select" aria-label="Default select example" required name="cuisine">
-                                        <option selected>Select Cuisine</option>
-                                        <option value="Filipino">Filipino</option>
-                                        <option value="Chinese">Chinese</option>
-                                        <option value="Mixican">Mixican</option>
-                                        <option value="German">German</option>
-                                        <option value="Japanese">Japanese</option>
-                                        <option value="Italian">Italian</option>
-
-                                    </select>
+                                        <input type="text" class="form-control" name="recipe" placeholder="Recipe ID">
+                                    <?php  } ?>
 
                                 </div>
                                 <div class="mb-3">
-                                    <label for="mainIngridients" class="form-label">Main Ingridients</label>
-                                    <input type="text" class="form-control" required name="mainIngridients" placeholder="Chicken,Pork">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="video" class="form-label">Video Tutorial</label>
-                                    <input type="text" class="form-control" required name="video" placeholder="SvV49SD99DY..">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="image" class="form-label">Thumbnail</label>
-                                    <input type="file" class="form-control" required name="image">
+                                    <label for="Ingredients" class="form-label">Ingredients</label>
+                                    <input type="text" class="form-control" name="Ingredients" placeholder="Ingredients..">
                                 </div>
 
                                 <div class="mb-3">
-
                                     <input type="submit" class="btn btn-success text-white" name="submit" value="Submit">
                                 </div>
 

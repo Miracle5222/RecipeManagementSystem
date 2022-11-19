@@ -16,7 +16,7 @@ session_start();
                         <div class="dropdown-menu border-0 orange">
                             <a class="dropdown-item" href="./recipes.php?recipe=breakfast">Breakfast</a>
                             <a class="dropdown-item" href="./recipes.php?recipe=Dinner">Dinner</a>
-                            <a class="dropdown-item" href="./recipes.php?recipe=Dessert">Dessert</a>
+                        
                             <!-- <div class="dropdown-divider"></div> -->
                             <a class="dropdown-item" href="./recipes.php?recipe=Lunch">Lunch</a>
 
@@ -127,7 +127,7 @@ session_start();
                                         <img src="../assets/images/heart1.png" alt="First slide">
                                     </div>
 
-                                    <img class="d-block w-100 image" src="<?= "../uploads/images/$row[image]" ?>" alt="First slide">
+                                    <img class="d-block w-100 image" src="<?= "../../server/uploads/images/$row[image]" ?>" alt="First slide">
                                     <div class="title">
                                         <div class="title-type">
                                             <span><?= $row['type'] ?></span><span class="date"><?= $row['date_created'] ?></span>
