@@ -9,8 +9,19 @@ session_start();
 
 
     <div class="login-form">
+        <?php
+        if (isset($_GET['status']) && isset($_GET['message'])) { ?>
+            <div class="alert alert-<?php echo $_GET['status'] ?> alert-dismissible fade show" role="alert">
+                <?php echo $_GET['message'] ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php   }
 
-        <form class="d-flex h-100 justify-content-center align-items-center flex-column" action="../control/register.php" method="post">
+        ?>
+        <form class="d-flex h-100 justify-content-center align-items-center flex-column bg-light p-4" action="../control/register.php" method="post">
+
             <h1 class="text-dark">Register</h1>
             <div class="mb-3">
                 <label for="Username" class="form-label">Username</label>
@@ -32,4 +43,3 @@ session_start();
 
     </div>
 </div>
-<?php include "../includes/footer.php" ?>

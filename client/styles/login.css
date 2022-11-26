@@ -10,9 +10,9 @@
 }
 .login-form {
   border-radius: 8px;
-  height: 400px;
+  height: auto;
   width: 320px;
-  background-color: #ffff;
+  /* background-color: #ffff; */
 }
 .button {
   background-color: #ffff;

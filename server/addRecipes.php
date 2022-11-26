@@ -132,7 +132,7 @@
                             <a class="sidebar-link waves-effect waves-dark sidebar-link" href="recipes.php" aria-expanded="false"><i class="mdi mdi-account-network"></i><span class="hide-menu">Recipes</span></a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="pages-profile.html" aria-expanded="false"><i class="mdi mdi-account-network"></i><span class="hide-menu">Profile</span></a>
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="pages-profile.html" aria-expanded="false"><i class="mdi mdi-account"></i><span class="hide-menu">Profile</span></a>
                         </li>
                     </ul>
                 </nav>
@@ -230,7 +230,7 @@
                                         <option value="Dinner">Dinner</option>
                                         <option value="Lunch">Lunch</option>
                                         <option value="Desserts">Desserts</option>
-                                        <option value="Appetizer & Snack">Appetizer & Snack</option>
+                                        <option value="AppetizerSnack">Appetizer & Snack</option>
 
 
                                     </select>
@@ -266,7 +266,14 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="mainIngridients" class="form-label">Main Ingridients</label>
-                                    <input type="text" class="form-control" required name="mainIngridients" placeholder="Chicken,Pork">
+
+                                    <select class="form-select" aria-label="Default select example" required name="mainIngridients">
+                                        <option selected>Select Main Ingredients</option>
+                                        <option value="SeaFood">Sea Food</option>
+                                        <option value="Vegetables">Vegetables</option>
+                                        <option value="Fruits">Fruits</option>
+                                        <option value="Beef">Beef</option>
+                                    </select>
                                 </div>
                                 <div class="mb-3">
                                     <label for="video" class="form-label">Video Tutorial</label>

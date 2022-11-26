@@ -3,7 +3,7 @@
         <div class="row">
 
             <div class="nav-container">
-                <a class="nav-link" href="../index.php">Recipe System</a>
+                <a class="nav-link" href="../index.php">Recipe Management System</a>
                 <ul class="nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Recipes</a>
@@ -38,13 +38,13 @@
                     <li class="nav-item">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" href="#">Cuisine</a>
                         <div class="dropdown-menu border-0 orange">
-                            <a class="dropdown-item " href="#">Filipino</a>
-                            <a class="dropdown-item" href="#">Chinese</a>
-                            <a class="dropdown-item" href="#">Mixican</a>
+                            <a class="dropdown-item " href="cuisine.php?cuisine=Filipino">Filipino</a>
+                            <a class="dropdown-item" href="cuisine.php?cuisine=Chinese">Chinese</a>
+                            <a class="dropdown-item" href="cuisine.php?cuisine=Mixican">Mixican</a>
                             <!-- <div class="dropdown-divider"></div> -->
-                            <a class="dropdown-item" href="#">German</a>
-                            <a class="dropdown-item" href="#">Japanese</a>
-                            <a class="dropdown-item" href="#">Italian</a>
+                            <a class="dropdown-item" href="cuisine.php?cuisine=German">German</a>
+                            <a class="dropdown-item" href="cuisine.php?cuisine=Japanese">Japanese</a>
+                            <a class="dropdown-item" href="cuisine.php?cuisine=Italian">Italian</a>
                         </div>
                     </li>
                     <li class="nav-item">

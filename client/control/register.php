@@ -2,25 +2,28 @@
 <?php include_once "../connections/config.php" ?>
 <?php
 
+$username = $_POST['username'];
+$password = $_POST['password'];
+$email = $_POST['email'];
 
-$sql = "SELECT * from user_tbl";
+
+$sql = "SELECT * from user_tbl where username = '$username' || email = '$email'";
 $result = $conn->query($sql);
 
-$username = $_POST['username'];
-$password = md5($_POST['password']);
-$email = $_POST['email'];
+
+$status = "";
+$message = "";
 if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        if ($username == $row['username']) {
-            echo "alert(username already exist)";
-            header("Location: ../pages/login.php");
-        } else {
-            $sql = "INSERT INTO user_tbl (username,password,email) values ('$username ','$password ','$email ')";
-            header("Location: ../pages/login.php");
-        }
-    }
+    $message  .= "Username and Email already exist!";
+    $status .= "danger";
+    header("Location: ../pages/register.php?status=$status&message=$message");
 } else {
-    echo "no records found";
+    $message  .= "Register Successfully";
+    $status .= "success";
+    $sql = "INSERT INTO user_tbl (username,password,email) values ('$username ','$password ','$email ')";
+    if ($conn->query($sql) === TRUE) {
+        header("Location: ../pages/register.php?status=$status&message=$message");
+    }
 }
 
 

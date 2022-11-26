@@ -73,7 +73,7 @@ section h1 {
 }
 .gridContainer .items {
   background-color: #f4f4f4;
-  height: 300px;
+  height: 310px;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(97, 97, 97, 0.24);
@@ -126,6 +126,9 @@ section h1 {
 }
 .title {
   padding: 12px;
+  font-family: "Oleo Script", cursive;
+}
+.fontFamily {
   font-family: "Oleo Script", cursive;
 }
 .title a h4 {
