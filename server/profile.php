@@ -26,6 +26,16 @@ if (!isset($_SESSION['admin_id'])) {
 
     <link href="./dist/css/style.min.css" rel="stylesheet" />
 
+    <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+
+    <!-- <script src="  https://code.jquery.com/jquery-3.5.1.js"></script> -->
+
+
 </head>
 
 <body>
@@ -84,7 +94,7 @@ if (!isset($_SESSION['admin_id'])) {
                                 <img src="./assets/images/users/1.jpg" alt="user" class="rounded-circle" width="31" />
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end user-dd animated" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="javascript:void(0)"><i class="ti-user m-r-5 m-l-5"></i> My Profile</a>
+                                <a class="dropdown-item" href="profile.php"><i class="ti-user m-r-5 m-l-5"></i> My Profile</a>
 
                             </ul>
                         </li>
@@ -115,7 +125,7 @@ if (!isset($_SESSION['admin_id'])) {
                                         <span class="op-5 user-email"><?= $_SESSION['email'] ?></span>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="Userdd">
-                                        <a class="dropdown-item" href="profile.php"><i class="ti-user m-r-5 m-l-5"></i> My Profile</a>
+                                        <a class="dropdown-item" href="javascript:void(0)"><i class="ti-user m-r-5 m-l-5"></i> My Profile</a>
 
 
                                         <a class="dropdown-item" href="../server/process/logout.php"><i class="fa fa-power-off m-r-5 m-l-5"></i> Logout</a>
@@ -152,82 +162,101 @@ if (!isset($_SESSION['admin_id'])) {
             <div class="page-breadcrumb">
                 <div class="row align-items-center">
                     <div class="col-5">
-                        <!-- <h4 class="page-title">Add Recipe</h4> -->
+                        <h4 class="page-title">Profile</h4>
                     </div>
                 </div>
             </div>
 
-
-
-
             <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-5">
-                        <?php
 
+                <div class="row">
+
+
+                    <div class="col-lg-4 col-xlg-9 col-md-12">
+                        <?php
                         if (isset($_POST['submit'])) {
 
-                            $recipe = $_POST['recipe'];
-                            $Ingredients = $_POST['Ingredients'];
+                            $id = $_SESSION['admin_id'];
+                            $username = $_POST['username'];
+
+                            $email = $_POST['email'];
+                            $password = $_POST['password'];
+
+                            $insertquery =
+                                "update admin_tbl set username = '$username',  email = '$email', password = '$password' where admin_id = $id";
 
 
-                            $ingredientsQuery = "insert into ingridient_tbl (ingridient_name,recipe_id) values ('$Ingredients','$recipe')";
-                            $iquery = mysqli_query($conn, $ingredientsQuery);
 
-                            if ($iquery) { ?>
+
+                            if ($iquery = mysqli_query($conn, $insertquery)) { ?>
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    <strong>Success!</strong> Ingredients added successfully.
+                                    <strong>Success!</strong> Admin Updated successfully.
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
-
-                            <?php
-
-                            } else { ?>
+                            <?php } else { ?>
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <strong> Failed to add Ingredients</strong>
+                                    <strong> Update Failed!</strong>
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                         <?php }
                         }
+
+
+
+
+
                         ?>
-                    </div>
-                </div>
-                <div class="row">
+                        <div class="card">
+                            <?php
 
-                    <div class="col-sm-5">
-                        <div class="card ">
-                            <h2 class="p-4 text-info text-center">Add Ingridients</h2>
+
+                            $sql = "SELECT * from admin_tbl where admin_id = '$_SESSION[admin_id]'";
+                            $result = $conn->query($sql);
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+
+
+                            ?>
+                                    <div class="card-body">
+                                        <form class="form-horizontal form-material" method="POST" enctype="multipart/form-data">
+                                            <div class="form-group mb-4">
+                                                <label class="col-md-12 p-0">Username</label>
+                                                <div class="col-md-12 border-bottom p-0">
+                                                    <input type="text" placeholder="Staff Username" value=<?= $row['username'] ?> name="username" class="form-control p-0 border-0" required />
+                                                </div>
+                                            </div>
+                                            <div class="form-group mb-4">
+                                                <label for="example-email" class="col-md-12 p-0">Email</label>
+                                                <div class="col-md-12 border-bottom p-0">
+                                                    <input type="email" placeholder="sample@admin.com" value=<?= $row['email'] ?> name="email" class="form-control p-0 border-0" id="example-email" required />
+                                                </div>
+                                            </div>
+                                            <div class="form-group mb-4">
+                                                <label class="col-md-12 p-0">Password</label>
+                                                <div class="col-md-12 border-bottom p-0">
+                                                    <input type="password" value=<?= $row['password'] ?> name="password" class="form-control p-0 border-0" required />
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="form-group mb-4">
+                                                <div class="col-md-12 border-bottom p-2">
+                                                    <input type="submit" placeholder="123 456 7890" name="submit" class="btn btn-success text-white" value="Update Profile" />
+                                                </div>
+
+                                            </div>
+                                        </form>
+                                    </div>
                         </div>
-                        <div class="card p-4">
-                            <form class="form-horizontal form-material" method="POST" enctype="multipart/form-data">
-                                <div class="mb-3">
-
-                                    <label for="recipe" class="form-label">Recipe ID</label>
-                                    <?php if (isset($_GET['recipeId'])) { ?>
-                                        <input type="text" class="form-control" name="recipe" value="<?= $_GET['recipeId'] ?>" placeholder="Recipe ID">
-                                    <?php } else { ?>
-
-                                        <input type="text" class="form-control" name="recipe" placeholder="Recipe ID">
-                                    <?php  } ?>
-
-                                </div>
-                                <div class="mb-3">
-                                    <label for="Ingredients" class="form-label">Ingredients</label>
-                                    <input type="text" class="form-control" name="Ingredients" placeholder="Ingredients..">
-                                </div>
-
-                                <div class="mb-3">
-                                    <input type="submit" class="btn btn-success text-white" name="submit" value="Submit">
-                                </div>
-
-
-                            </form>
-                        </div>
                     </div>
 
+            <?php
+                                }
+                            }
+            ?>
 
                 </div>
-
                 <div class="row"></div>
 
                 <div class="row"></div>
@@ -242,7 +271,8 @@ if (!isset($_SESSION['admin_id'])) {
 
     </div>
 
-    <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
+
+
     <!-- Bootstrap tether Core JavaScript -->
     <script src="./assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./dist/js/app-style-switcher.js"></script>

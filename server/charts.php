@@ -7,6 +7,7 @@ if (!isset($_SESSION['admin_id'])) {
     header("index.php");
 }
 ?>
+
 <?php include "./connections/config.php" ?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
@@ -25,6 +26,7 @@ if (!isset($_SESSION['admin_id'])) {
     <link href="./assets/libs/chartist/dist/chartist.min.css" rel="stylesheet" />
 
     <link href="./dist/css/style.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
 </head>
 
@@ -115,7 +117,7 @@ if (!isset($_SESSION['admin_id'])) {
                                         <span class="op-5 user-email"><?= $_SESSION['email'] ?></span>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="Userdd">
-                                        <a class="dropdown-item" href="profile.php"><i class="ti-user m-r-5 m-l-5"></i> My Profile</a>
+                                        <a class="dropdown-item" href="javascript:void(0)"><i class="ti-user m-r-5 m-l-5"></i> My Profile</a>
 
 
                                         <a class="dropdown-item" href="../server/process/logout.php"><i class="fa fa-power-off m-r-5 m-l-5"></i> Logout</a>
@@ -131,15 +133,14 @@ if (!isset($_SESSION['admin_id'])) {
                         </li>
                         <!-- User Profile-->
                         <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="main.php" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a>
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="index.html" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a>
                         </li>
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark sidebar-link" href="recipes.php" aria-expanded="false"><i class="mdi mdi-account-network"></i><span class="hide-menu">Recipes</span></a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="profile.php" aria-expanded="false"><i class="mdi mdi-account"></i><span class="hide-menu">Profile</span></a>
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="pages-profile.html" aria-expanded="false"><i class="mdi mdi-account"></i><span class="hide-menu">Profile</span></a>
                         </li>
-
                     </ul>
                 </nav>
                 <!-- End Sidebar navigation -->
@@ -152,94 +153,212 @@ if (!isset($_SESSION['admin_id'])) {
             <div class="page-breadcrumb">
                 <div class="row align-items-center">
                     <div class="col-5">
-                        <!-- <h4 class="page-title">Add Recipe</h4> -->
+                        <h4 class="page-title">Dashboard</h4>
                     </div>
                 </div>
             </div>
-
-
-
 
             <div class="container-fluid">
+
                 <div class="row">
-                    <div class="col-md-5">
-                        <?php
-
-                        if (isset($_POST['submit'])) {
-
-                            $recipe = $_POST['recipe'];
-                            $Ingredients = $_POST['Ingredients'];
-
-
-                            $ingredientsQuery = "insert into ingridient_tbl (ingridient_name,recipe_id) values ('$Ingredients','$recipe')";
-                            $iquery = mysqli_query($conn, $ingredientsQuery);
-
-                            if ($iquery) { ?>
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    <strong>Success!</strong> Ingredients added successfully.
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-
-                            <?php
-
-                            } else { ?>
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <strong> Failed to add Ingredients</strong>
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                        <?php }
-                        }
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-
-                    <div class="col-sm-5">
-                        <div class="card ">
-                            <h2 class="p-4 text-info text-center">Add Ingridients</h2>
-                        </div>
+                    <div class="col-md-6">
                         <div class="card p-4">
-                            <form class="form-horizontal form-material" method="POST" enctype="multipart/form-data">
-                                <div class="mb-3">
-
-                                    <label for="recipe" class="form-label">Recipe ID</label>
-                                    <?php if (isset($_GET['recipeId'])) { ?>
-                                        <input type="text" class="form-control" name="recipe" value="<?= $_GET['recipeId'] ?>" placeholder="Recipe ID">
-                                    <?php } else { ?>
-
-                                        <input type="text" class="form-control" name="recipe" placeholder="Recipe ID">
-                                    <?php  } ?>
-
-                                </div>
-                                <div class="mb-3">
-                                    <label for="Ingredients" class="form-label">Ingredients</label>
-                                    <input type="text" class="form-control" name="Ingredients" placeholder="Ingredients..">
-                                </div>
-
-                                <div class="mb-3">
-                                    <input type="submit" class="btn btn-success text-white" name="submit" value="Submit">
-                                </div>
-
-
-                            </form>
+                            <h3 class="text-center">Pupularity</h2>
+                                <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card p-4">
+                            <h3 class="text-center">Average Ratings</h2>
+                                <canvas id="myCharts" style="width:100%;max-width:600px"></canvas>
                         </div>
                     </div>
 
 
+
                 </div>
 
-                <div class="row"></div>
-
-                <div class="row"></div>
 
             </div>
 
-            <footer class="footer text-center">
-                Recipe Management System <strong>copy right &copy 2022</strong>
-            </footer>
+            <div class="row"></div>
+
+            <div class="row"></div>
 
         </div>
 
+        <footer class="footer text-center">
+            Recipe Management System <strong>copy right &copy 2022</strong>
+        </footer>
+
+    </div>
+
+    <?php ?>
+    <script>
+        function AjaxCallWithPromise() {
+            return new Promise(function(resolve, reject) {
+                const objXMLHttpRequest = new XMLHttpRequest();
+
+                objXMLHttpRequest.onreadystatechange = function() {
+                    if (objXMLHttpRequest.readyState === 4) {
+                        if (objXMLHttpRequest.status == 200) {
+                            resolve(objXMLHttpRequest.responseText);
+                        } else {
+                            reject('Error Code: ' + objXMLHttpRequest.status + ' Error Message: ' + objXMLHttpRequest.statusText);
+                        }
+                    }
+                }
+
+                objXMLHttpRequest.open('GET', '../server/process/averageRatings.php');
+                objXMLHttpRequest.send();
+            });
+        }
+
+        AjaxCallWithPromise().then(
+            data => {
+                // console.log('Success Response: ' + data)
+                // console.log(JSON.parse(data))
+                let parses = JSON.parse(data);
+                let yValuess = parses.map((value) => {
+                    return value.averageRatings;
+                })
+                let xValuess = parses.map((value) => {
+                    return value.title;
+                })
+                console.log(xValuess);
+                console.log(yValuess);
+
+                // var xValues = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
+                // var yValues = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15];
+
+                new Chart("myCharts", {
+                    type: "line",
+                    data: {
+                        labels: xValuess,
+                        datasets: [{
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: "rgba(0,0,255,1.0)",
+                            borderColor: "rgba(0,0,255,0.1)",
+                            data: yValuess
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        // scales: {
+                        //     yAxes: [{
+                        //         ticks: {
+                        //             min: 6,
+                        //             max: 16
+                        //         }
+                        //     }],
+                        // }
+                    }
+                });
+
+            },
+
+            error => {
+                console.log(error)
+            }
+        );
+    </script>
+    <script>
+        function AjaxCallWithPromise() {
+            return new Promise(function(resolve, reject) {
+                const objXMLHttpRequest = new XMLHttpRequest();
+
+                objXMLHttpRequest.onreadystatechange = function() {
+                    if (objXMLHttpRequest.readyState === 4) {
+                        if (objXMLHttpRequest.status == 200) {
+                            resolve(objXMLHttpRequest.responseText);
+                        } else {
+                            reject('Error Code: ' + objXMLHttpRequest.status + ' Error Message: ' + objXMLHttpRequest.statusText);
+                        }
+                    }
+                }
+
+                objXMLHttpRequest.open('GET', '../server/process/user.php');
+                objXMLHttpRequest.send();
+            });
+        }
+
+        AjaxCallWithPromise().then(
+            data => {
+                // console.log('Success Response: ' + typeof data)
+                // console.log(JSON.parse(data))
+                let parse = JSON.parse(data);
+                let yValues = parse.map((value) => {
+                    return value.averageRatings;
+                })
+                let xValues = parse.map((value) => {
+                    return value.title;
+                })
+                // console.log(x);
+                // console.log(y);
+
+                var barColors = [
+                    "#06BFE8",
+                    "#FBBA7E",
+                    "#5885F9",
+                    "#FFCD4B",
+                    "#1e7145"
+                ];
+
+                new Chart("myChart", {
+                    type: "pie",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            backgroundColor: barColors,
+                            data: yValues
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            // text: "Total recipe base on popularity"
+                        }
+                    }
+                });
+
+            },
+
+            error => {
+                console.log(error)
+            }
+        );
+    </script>
+    <script>
+        // var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+        // var yValues = [55, 49, 44, 24, 15];
+        // var barColors = [
+        //     "#b91d47",
+        //     "#00aba9",
+        //     "#2b5797",
+        //     "#e8c3b9",
+        //     "#1e7145"
+        // ];
+
+        // new Chart("myChart", {
+        //     type: "pie",
+        //     data: {
+        //         labels: xValues,
+        //         datasets: [{
+        //             backgroundColor: barColors,
+        //             data: yValues
+        //         }]
+        //     },
+        //     options: {
+        //         title: {
+        //             display: true,
+        //             text: "World Wide Wine Production 2018"
+        //         }
+        //     }
+        // });
+    </script>
     </div>
 
     <script src="./assets/libs/jquery/dist/jquery.min.js"></script>

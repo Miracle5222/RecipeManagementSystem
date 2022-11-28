@@ -115,7 +115,7 @@ session_start();
         }
         ?>
 
-        <form class="d-flex h-100 justify-content-center align-items-center flex-column" method="post" enctype="multipart/form-data">
+        <form class="d-flex h-100 justify-content-center align-items-center flex-column bg-light py-4" method="post" enctype="multipart/form-data">
             <h1 class="text-dark">Login</h1>
             <div class="mb-3">
                 <label for="Username" class="form-label">Username</label>

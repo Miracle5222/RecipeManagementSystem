@@ -30,6 +30,7 @@ if (!isset($_SESSION['admin_id'])) {
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
 
     <!-- <script src="  https://code.jquery.com/jquery-3.5.1.js"></script> -->
@@ -93,7 +94,7 @@ if (!isset($_SESSION['admin_id'])) {
                                 <img src="./assets/images/users/1.jpg" alt="user" class="rounded-circle" width="31" />
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end user-dd animated" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="javascript:void(0)"><i class="ti-user m-r-5 m-l-5"></i> My Profile</a>
+                                <a class="dropdown-item" href="profile.php"><i class="ti-user m-r-5 m-l-5"></i> My Profile</a>
 
                             </ul>
                         </li>
@@ -119,12 +120,12 @@ if (!isset($_SESSION['admin_id'])) {
                                 <div class="user-content hide-menu m-l-10">
                                     <a href="#" class="" id="Userdd" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <h5 class="m-b-0 user-name font-medium">
-                                            <?= $_SESSION['username'] ?> <i class="fa fa-angle-down"></i>
+                                            Admin <i class="fa fa-angle-down"></i>
                                         </h5>
-                                        <span class="op-5 user-email"><?= $_SESSION['email'] ?></span>
+                                        <span class="op-5 user-email">Admin@gmail.com</span>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="Userdd">
-                                        <a class="dropdown-item" href="javascript:void(0)"><i class="ti-user m-r-5 m-l-5"></i> My Profile</a>
+                                        <a class="dropdown-item" href="profile.php"><i class="ti-user m-r-5 m-l-5"></i> My Profile</a>
 
 
                                         <a class="dropdown-item" href="../server/process/logout.php"><i class="fa fa-power-off m-r-5 m-l-5"></i> Logout</a>
@@ -161,15 +162,31 @@ if (!isset($_SESSION['admin_id'])) {
             <div class="page-breadcrumb">
                 <div class="row align-items-center">
                     <div class="col-5">
-                        <h4 class="page-title">All Recipe</h4>
+                        <h4 class="page-title">Dashboard</h4>
                     </div>
                 </div>
             </div>
 
-
-
-
             <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card p-4">
+                            <h3 class="text-center">Popularity</h2>
+                                <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card p-4">
+                            <h3 class="text-center">Average Ratings</h2>
+                                <canvas id="myCharts" style="width:100%;max-width:600px"></canvas>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
                 <div class="row ">
                     <div class="col-md-5">
                         <?php
@@ -232,7 +249,7 @@ if (!isset($_SESSION['admin_id'])) {
                             ?>
                         </div>
                     </div>
-                    <div class="row bg-light p-4">
+                    <div class="row card p-4">
 
                         <table id="example" class="display " style="width:100%">
                             <thead>
@@ -317,7 +334,143 @@ if (!isset($_SESSION['admin_id'])) {
         </div>
 
     </div>
+    <script>
+        function AjaxCallWithPromise() {
+            return new Promise(function(resolve, reject) {
+                const objXMLHttpRequest = new XMLHttpRequest();
 
+                objXMLHttpRequest.onreadystatechange = function() {
+                    if (objXMLHttpRequest.readyState === 4) {
+                        if (objXMLHttpRequest.status == 200) {
+                            resolve(objXMLHttpRequest.responseText);
+                        } else {
+                            reject('Error Code: ' + objXMLHttpRequest.status + ' Error Message: ' + objXMLHttpRequest.statusText);
+                        }
+                    }
+                }
+
+                objXMLHttpRequest.open('GET', '../server/process/averageRatings.php');
+                objXMLHttpRequest.send();
+            });
+        }
+
+        AjaxCallWithPromise().then(
+            data => {
+                // console.log('Success Response: ' + data)
+                // console.log(JSON.parse(data))
+                let parses = JSON.parse(data);
+                let yValuess = parses.map((value) => {
+                    return value.averageRatings;
+                })
+                let xValuess = parses.map((value) => {
+                    return value.title;
+                })
+                console.log(xValuess);
+                console.log(yValuess);
+
+                // var xValues = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
+                // var yValues = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15];
+
+                new Chart("myCharts", {
+                    type: "line",
+                    data: {
+                        labels: xValuess,
+                        datasets: [{
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: "rgba(0,0,255,1.0)",
+                            borderColor: "rgba(0,0,255,0.1)",
+                            data: yValuess
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        // scales: {
+                        //     yAxes: [{
+                        //         ticks: {
+                        //             min: 6,
+                        //             max: 16
+                        //         }
+                        //     }],
+                        // }
+                    }
+                });
+
+            },
+
+            error => {
+                console.log(error)
+            }
+        );
+    </script>
+    <script>
+        function AjaxCallWithPromise() {
+            return new Promise(function(resolve, reject) {
+                const objXMLHttpRequest = new XMLHttpRequest();
+
+                objXMLHttpRequest.onreadystatechange = function() {
+                    if (objXMLHttpRequest.readyState === 4) {
+                        if (objXMLHttpRequest.status == 200) {
+                            resolve(objXMLHttpRequest.responseText);
+                        } else {
+                            reject('Error Code: ' + objXMLHttpRequest.status + ' Error Message: ' + objXMLHttpRequest.statusText);
+                        }
+                    }
+                }
+
+                objXMLHttpRequest.open('GET', '../server/process/user.php');
+                objXMLHttpRequest.send();
+            });
+        }
+
+        AjaxCallWithPromise().then(
+            data => {
+                // console.log('Success Response: ' + typeof data)
+                // console.log(JSON.parse(data))
+                let parse = JSON.parse(data);
+                let yValues = parse.map((value) => {
+                    return value.averageRatings;
+                })
+                let xValues = parse.map((value) => {
+                    return value.title;
+                })
+                // console.log(x);
+                // console.log(y);
+
+                var barColors = [
+                    "#06BFE8",
+                    "#FBBA7E",
+                    "#5885F9",
+                    "#FFCD4B",
+                    "#1e7145"
+                ];
+
+                new Chart("myChart", {
+                    type: "pie",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            backgroundColor: barColors,
+                            data: yValues
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            // text: "Total recipe base on popularity"
+                        }
+                    }
+                });
+
+            },
+
+            error => {
+                console.log(error)
+            }
+        );
+    </script>
     <script>
         $(document).ready(function() {
             $('#example').DataTable();
