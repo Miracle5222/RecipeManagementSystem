@@ -61,9 +61,17 @@ session_start();
                     <div>
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" href="#">Settings</a>
                         <div class="dropdown-menu border-0 orange">
-                            <a class="dropdown-item " href="profile.php">Profile</a>
-                            <a class="dropdown-item" href="#">Favorites</a>
-                            <a class="dropdown-item" href="../control/logout.php">Logout</a>
+                            <a class="dropdown-item " href="../pages/profile.php">Profile</a>
+
+                            <?php
+                            if (!isset($_SESSION['id'])) { ?>
+                                <a class="dropdown-item" href="../pages/login.php">Sign-In</a>
+                            <?php } else { ?>
+
+                                <a class="dropdown-item" href="../control/logout.php">Logout</a>
+                            <?php }
+
+                            ?>
 
                         </div>
                     </div>

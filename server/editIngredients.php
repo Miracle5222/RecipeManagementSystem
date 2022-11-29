@@ -39,12 +39,12 @@ if (!isset($_SESSION['admin_id'])) {
 
 <body>
 
-    <div class="preloader">
+    <!-- <div class="preloader">
         <div class="lds-ripple">
             <div class="lds-pos"></div>
             <div class="lds-pos"></div>
         </div>
-    </div>
+    </div> -->
     <!-- ============================================================== -->
     <!-- Main wrapper - style you can find in pages.scss -->
     <!-- ============================================================== -->
@@ -183,11 +183,10 @@ if (!isset($_SESSION['admin_id'])) {
                                 <div class="col-md-6">
                                     <?php
 
-                                    if (isset($_POST['editDirection'])) {
-                                        $d_Id = $_GET['d_Id'];
+                                    if (isset($_POST['editIngredients'])) {
+                                        $ingridient_id = $_GET['ingridient_id'];
                                         $id = $_POST['recipe'];
-                                        $steps = $_POST['steps'];
-                                        $directions = $_POST['direction'];
+                                        $Ingredients = $_POST['Ingredients'];
                                         // $directions =  str_replace("'", "",  "$directions");
                                         // echo $d_Id;
                                         // echo $id;
@@ -195,16 +194,16 @@ if (!isset($_SESSION['admin_id'])) {
                                         // echo $directions;
 
 
-                                        $sql = "UPDATE directions_tbl SET heading = '$steps',directions = '$directions' ,recipe_id = '$id'  WHERE directions_id ='$d_Id'";
+                                        $sql = "UPDATE ingridient_tbl SET ingridient_name = '$Ingredients', recipe_id = '$id'  WHERE ingridient_id ='$ingridient_id'";
 
                                         if ($conn->query($sql) === TRUE) { ?>
                                             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                                Directions Updated successfully.
+                                                Ingredients Updated successfully.
                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                             </div>
                                         <?php } else { ?>
                                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                Failed to update Directions.
+                                                Failed to update Ingredients.
                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                             </div>
                                     <?php }
@@ -216,7 +215,7 @@ if (!isset($_SESSION['admin_id'])) {
                                     <?php
                                     if (isset($_GET['id'])) {
 
-                                        $sql = "SELECT * FROM directions_tbl where recipe_id='$_GET[id]' and directions_id = '$_GET[d_Id]'";
+                                        $sql = "SELECT * FROM ingridient_tbl where recipe_id='$_GET[id]' and ingridient_id = '$_GET[ingridient_id]'";
                                         $result = $conn->query($sql);
 
                                         $row = $result->fetch_assoc();
@@ -236,34 +235,14 @@ if (!isset($_SESSION['admin_id'])) {
 
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="steps" class="form-label">Step</label>
-                                                    <?php if (isset($_GET['id'])) { ?>
-                                                        <input type="text" class="form-control" name="steps" value="<?= $row['heading'] ?>" placeholder="steps">
-                                                    <?php } else { ?>
-
-                                                        <input type="text" class="form-control" name="steps" placeholder="steps">
-                                                    <?php  } ?>
-
+                                                    <label for="Ingredients" class="form-label">Ingredients</label>
+                                                    <input type="text" class="form-control" name="Ingredients" value="<?= $row['ingridient_name'] ?>" placeholder="Ingredients..">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="direction" class="form-label">Direction</label>
-                                                    <?php if (isset($_GET['id'])) { ?>
-                                                        <textarea type="text" class="form-control" name="direction" rows="5" placeholder="direction..">
-                                                        <?= $row['directions'] ?>
-                                                    </textarea>
-                                                    <?php } else { ?>
-                                                        <textarea type="text" class="form-control" rows="5" name="direction" placeholder="direction.."><?= $row['directions'] ?></textarea>
-                                                    <?php  } ?>
-
-                                                </div>
-                                                <div class="mb-3">
-                                                    <input type="submit" class="btn btn-success text-white" name="editDirection" value="Submit">
+                                                    <input type="submit" class="btn btn-success text-white" name="editIngredients" value="Submit">
 
                                                     <a href="recipeInfo.php?id=<?= $_GET['id'] ?>&image=<?= $_GET['image'] ?>" class="btn btn-outline-success">Back</a>
                                                 </div>
-                                                <!-- id=<?= $_GET['id'] ?>&image=<?= $_GET['image'] ?> -->
-
-
                                             </form>
                                         </div>
                                     <?php  }

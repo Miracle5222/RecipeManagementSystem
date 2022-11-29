@@ -5,6 +5,36 @@ session_start();
 <?php include "../includes/header.php" ?>
 <?php include "../connections/config.php" ?>
 
+
+<?php
+
+if (isset($_GET['favorites']) && isset($_SESSION['id'])) {
+    $fav = $_GET['favorites'];
+    $userId =   $_SESSION['id'];
+
+    $selectFav = "select * from favorites_tbl where recipe_id = '$fav'";
+    $resSelect = $conn->query($selectFav);
+
+    if ($resSelect->num_rows > 0) {
+        echo "<script type = \"text/javascript\">
+        window.alert('This recipe is already added to your favorites')
+        </script>";
+    } else {
+        $insert = "insert into favorites_tbl(user_id,recipe_id)value('$userId','$fav')";
+        if ($conn->query($insert) === TRUE) {
+
+
+            echo "<script type = \"text/javascript\">
+            window.alert('Recipe added to your favorites')
+            </script>";
+        } else {
+            echo "<script type = \"text/javascript\">
+            window.alert('You need to login first')
+            </script>";
+        }
+    }
+}
+?>
 <?php
 $arr1 = array();
 $arr2 = array();
@@ -81,9 +111,17 @@ $_SESSION['mainIngridients'] = $arr1;
                     <div>
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" href="#">Settings</a>
                         <div class="dropdown-menu border-0 orange">
-                            <a class="dropdown-item " href="#">Profile</a>
-                            <a class="dropdown-item" href="#">Favorites</a>
-                            <a class="dropdown-item" href="../control/logout.php">Logout</a>
+                            <a class="dropdown-item " href="../pages/profile.php">Profile</a>
+
+                            <?php
+                            if (!isset($_SESSION['id'])) { ?>
+                                <a class="dropdown-item" href="../pages/login.php">Sign-In</a>
+                            <?php } else { ?>
+
+                                <a class="dropdown-item" href="../control/logout.php">Logout</a>
+                            <?php }
+
+                            ?>
 
                         </div>
                     </div>
@@ -104,7 +142,7 @@ $_SESSION['mainIngridients'] = $arr1;
         <div class="boxThumbnail">
             <div class="gridContainer">
                 <?php
-                $date = date('Y-m-d', strtotime('-14 days'));
+                $date = date('Y-m-d', strtotime('-7 days'));
 
                 $sql = "SELECT recipe_tbl.`title`, recipe_tbl.`date_created`, recipe_tbl.`cuisine` , recipe_tbl.recipe_id, recipe_tbl.type, recipe_tbl.`description`, comment_tbl.`ratings`, recipe_tbl.`image` FROM recipe_tbl LEFT JOIN comment_tbl ON comment_tbl.`recipe_id` = recipe_tbl.`recipe_id` where recipe_tbl.date_created > '$date' group by recipe_tbl.recipe_id";
                 $result = $conn->query($sql);
@@ -124,7 +162,7 @@ $_SESSION['mainIngridients'] = $arr1;
 
                             <div class="item">
 
-                                <a href="#">
+                                <a href="latestRecipes.php?favorites=<?= $row['recipe_id'] ?>">
                                     <div class="badge">
                                         <img src="../../server/assets/images/heart1.png" alt="First slide">
                                     </div>

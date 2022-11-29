@@ -27,62 +27,71 @@
             // $rowGlobal = $result->fetch_assoc();
             if ($result->num_rows > 0) {
 
+                $num = 0;
 
 
                 while ($row = $result->fetch_assoc()) {
 
-                    $sqlRatings = "   SELECT SUM(ratings) as totalRatings, COUNT(comment_id) as ratingID FROM comment_tbl where recipe_id = '$row[recipe_id]' ";
+                    $sqlRatings = "   SELECT avg(ratings) as totalRatings, COUNT(comment_id) as ratingsNum FROM comment_tbl where recipe_id = '$row[recipe_id]' ";
                     $resultRatings = $conn->query($sqlRatings);
                     $rowGlobalRatings = $resultRatings->fetch_assoc();
 
+                    if ($rowGlobalRatings['totalRatings'] > 2) {
+                        $num++;
+
+
+
+
             ?>
-                    <div class="items">
+                        <div class="items">
 
-                        <div class="item">
+                            <div class="item">
 
-                            <a href="#">
-                                <div class="badge">
-                                    <img src="./../server/assets/images/heart1.png" alt="First slide">
-                                </div>
-                            </a>
-                            <a href="./pages/recipe.php?id=<?= $row['recipe_id'] ?>">
-                                <img class="d-block w-100 image" src="<?= "./../server/uploads/images/$row[image]" ?>" alt="First slide">
-                                <div class="title">
-                                    <div class="title-type">
-                                        <span><?= $row['type'] ?></span><span class="date"><?= $row['date_created'] ?></span>
+                                <a href="#">
+                                    <div class="badge">
+                                        <img src="./../server/assets/images/heart1.png" alt="First slide">
                                     </div>
-                                    <h4><?= $row['title'] ?></h4>
-                                    <div class="d-flex align-items-center">
-                                        <?php
+                                </a>
+                                <a href="./pages/recipe.php?id=<?= $row['recipe_id'] ?>">
+                                    <img class="d-block w-100 image" src="<?= "./../server/uploads/images/$row[image]" ?>" alt="First slide">
+                                    <div class="title">
+                                        <div class="title-type">
+                                            <span><?= $row['type'] ?></span><span class="date"><?= $row['date_created'] ?></span>
+                                        </div>
+                                        <h4><?= $row['title'] ?></h4>
+                                        <div class="d-flex align-items-center">
+                                            <?php
 
-                                        if ($rowGlobalRatings['totalRatings'] != 0) { ?>
-                                            <?php for ($ratings = 1; $ratings <= round($rowGlobalRatings['totalRatings']   / $rowGlobalRatings['ratingID']); $ratings++) {
+                                            if ($rowGlobalRatings['totalRatings'] != 0) { ?>
+                                                <?php for ($ratings = 1; $ratings <= round($rowGlobalRatings['totalRatings']   / $rowGlobalRatings['ratingsNum']); $ratings++) {
 
 
+                                                ?>
+                                                    <div style="width: 35px; height: 28px;">
+                                                        <img class="d-block w-100 image" src="./../server/uploads/images/star.png " alt="ratings">
+                                                    </div>
+
+                                                <?php     } ?>
+                                                <?php if ($rowGlobalRatings['totalRatings'] != 0) { ?>
+                                                    <span class="text-dark pl-2"><?php echo round($rowGlobalRatings['totalRatings'], 1)  ?></span>
+                                                <?php  } else {    ?>
+                                                    <span class="text-dark pl-2"></span>
+                                                <?php    }
+                                                ?>
+
+                                            <?php  }
                                             ?>
-                                                <div style="width: 35px; height: 28px;">
-                                                    <img class="d-block w-100 image" src="./../server/uploads/images/star.png " alt="ratings">
-                                                </div>
 
-                                            <?php     } ?>
-                                            <?php if ($rowGlobalRatings['totalRatings'] != 0) { ?>
-                                                <span class="text-dark pl-2"><?php echo round($rowGlobalRatings['totalRatings']   / $rowGlobalRatings['ratingID'], 1)  ?></span>
-                                            <?php  } else {    ?>
-                                                <span class="text-dark pl-2"></span>
-                                            <?php    }
-                                            ?>
-
-                                        <?php  }
-                                        ?>
-
+                                        </div>
+                                        <!-- <?= $rowGlobalRatings['totalRatings']  ?> -->
                                     </div>
-                                    <!-- <?= $rowGlobalRatings['totalRatings']  ?> -->
-                                </div>
-                            </a>
+                                </a>
+                            </div>
+
                         </div>
-
-                    </div>
             <?php  }
+                }
+                $_SESSION['total'] =   $num;
             } else {
                 echo "no records found";
             }

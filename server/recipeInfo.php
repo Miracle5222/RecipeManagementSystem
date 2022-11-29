@@ -330,7 +330,9 @@ if (!isset($_SESSION['admin_id'])) {
                                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                     </div>
 
-                                <?php } else { ?>
+                                <?php
+
+                                } else { ?>
                                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                         <strong>Failed to delete Ingredients!</strong>
                                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -437,7 +439,11 @@ if (!isset($_SESSION['admin_id'])) {
                                                 <td><?= $row['ingridient_name'] ?></td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        <a href="#" class="text-info fw-semibold px-4">Edit</a> <a href="recipeInfo.php?id=<?= $_GET['id'] ?>&deleteIngredients=<?= $row['ingridient_id'] ?>&image=<?= $_GET['image'] ?>" class="text-danger fw-semibold">Delete</a>
+                                                        <a href="editIngredients.php?id=<?= $_GET['id'] ?>&ingridient_id=<?= $row['ingridient_id'] ?>&image=<?= $_GET['image'] ?> " class="px-2">
+                                                            Edit</a>
+                                                        <a href="recipeInfo.php?id=<?= $_GET['id'] ?>&deleteIngredients=<?= $row['ingridient_id'] ?>&image=<?= $_GET['image'] ?>" class="text-danger">
+                                                            Delete</a>
+                                                        <!-- <a href="editIngredients.php" class="text-info fw-semibold px-4">Edit</a> <a href="recipeInfo.php?id=<?= $_GET['id'] ?>&deleteIngredients=<?= $row['ingridient_id'] ?>&image=<?= $_GET['image'] ?>" class="text-danger fw-semibold">Delete</a> -->
                                                     </div>
                                                 </td>
 

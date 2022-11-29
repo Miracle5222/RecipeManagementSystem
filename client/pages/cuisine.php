@@ -4,6 +4,24 @@ session_start();
 ?>
 <?php include "../includes/header.php" ?>
 <?php include "../connections/config.php" ?>
+<?php
+$arr1 = array();
+$arr2 = array();
+
+$sql1 = "SELECT distinct mainIngridients from recipe_tbl";
+$result1 = $conn->query($sql1);
+
+
+
+
+
+while ($row = $result1->fetch_assoc()) {
+    $arr2 = $row['mainIngridients'];
+    array_push($arr1, $arr2);
+}
+$_SESSION['mainIngridients'] = $arr1;
+
+?>
 <nav>
     <div class="container">
         <div class="row">
@@ -34,12 +52,13 @@ session_start();
                     <li class="nav-item">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" href="#">Ingredients</a>
                         <div class="dropdown-menu border-0 orange">
-                            <a class="dropdown-item " href="./ingredients.php?ingredients=Meat">Meat</a>
-                            <a class="dropdown-item" href="./ingredients.php?ingredients=Sea Food">Sea Food</a>
-                            <a class="dropdown-item" href="./ingredients.php?ingredients=Vegetables">Vegetables</a>
-                            <!-- <div class="dropdown-divider"></div> -->
-                            <a class="dropdown-item" href="./ingredients.php?ingredients=Fruits">Fruits</a>
-                            <a class="dropdown-item" href="./ingredients.php?ingredients=Beef">Beef</a>
+
+                            <?php
+                            foreach ($_SESSION['mainIngridients'] as $ingredients) : ?>
+                                <a class="dropdown-item " href="./ingredients.php?ingredients=<?= $ingredients ?>"><?= $ingredients ?></a>
+                            <?php endforeach;
+                            ?>
+
                         </div>
                     </li>
                     <li class="nav-item">
@@ -64,9 +83,17 @@ session_start();
                     <div>
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" href="#">Settings</a>
                         <div class="dropdown-menu border-0 orange">
-                            <a class="dropdown-item " href="#">Profile</a>
-                            <a class="dropdown-item" href="#">Favorites</a>
-                            <a class="dropdown-item" href="../control/logout.php">Logout</a>
+                            <a class="dropdown-item " href="../pages/profile.php">Profile</a>
+
+                            <?php
+                            if (!isset($_SESSION['id'])) { ?>
+                                <a class="dropdown-item" href="../pages/login.php">Sign-In</a>
+                            <?php } else { ?>
+
+                                <a class="dropdown-item" href="../control/logout.php">Logout</a>
+                            <?php }
+
+                            ?>
 
                         </div>
                     </div>
@@ -82,7 +109,7 @@ session_start();
 
 
     <div class="section" id="latest">
-
+        <h1><?= $_GET['cuisine'] ?></h1>
         <div class="boxThumbnail">
             <div class="gridContainer">
 

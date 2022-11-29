@@ -5,4 +5,10 @@ session_destroy();
 
 
 echo $id;
-header("Location: ../pages/recipe.php?id=$_GET[recipeID]");
+
+
+if (isset($_GET['recipeID'])) {
+    header("Location: ../pages/recipe.php?id=$_GET[recipeID]");
+} else {
+    header("Location: ../pages/login.php");
+}

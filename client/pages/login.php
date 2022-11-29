@@ -13,43 +13,45 @@ session_start();
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Recipes</a>
                         <div class="dropdown-menu border-0 orange">
-                            <a class="dropdown-item" href="./pages/recipes.php?recipe=breakfast">Breakfast</a>
-                            <a class="dropdown-item" href="./pages/recipes.php?recipe=Dinner">Dinner</a>
+                            <a class="dropdown-item" href="./recipes.php?recipe=breakfast">Breakfast</a>
+                            <a class="dropdown-item" href="./recipes.php?recipe=Dinner">Dinner</a>
 
                             <!-- <div class="dropdown-divider"></div> -->
-                            <a class="dropdown-item" href="./pages/recipes.php?recipe=Lunch">Lunch</a>
+                            <a class="dropdown-item" href="./recipes.php?recipe=Lunch">Lunch</a>
 
-                            <a class="dropdown-item" href="./pages/recipes.php?recipe=Desserts">Desserts</a>
-                            <a class="dropdown-item" href="./pages/recipes.php?recipe=Appetizer">Appetizers & Snack</a>
+                            <a class="dropdown-item" href="./recipes.php?recipe=Desserts">Desserts</a>
+                            <a class="dropdown-item" href="./recipes.php?recipe=Appetizer">Appetizers & Snack</a>
                         </div>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="#popular">Popular Recipes</a>
+                        <a class="nav-link" href="popularRecipes.php">Popular Recipes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#latest">Latest Recipes</a>
+                        <a class="nav-link" href="latestRecipes.php">Latest Recipes</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" href="#">Ingredients</a>
                         <div class="dropdown-menu border-0 orange">
-                            <a class="dropdown-item " href="#">Meat</a>
-                            <a class="dropdown-item" href="#">Sea Fod</a>
-                            <a class="dropdown-item" href="#">Vegetables</a>
-                            <!-- <div class="dropdown-divider"></div> -->
-                            <a class="dropdown-item" href="#">Fruits</a>
-                            <a class="dropdown-item" href="#">Beef</a>
+
+                            <?php
+                            foreach ($_SESSION['mainIngridients'] as $ingredients) : ?>
+                                <a class="dropdown-item " href="./ingredients.php?ingredients=<?= $ingredients ?>"><?= $ingredients ?></a>
+                            <?php endforeach;
+                            ?>
+
                         </div>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" href="#">Cuisine</a>
                         <div class="dropdown-menu border-0 orange">
-                            <a class="dropdown-item " href="#">Filipino</a>
-                            <a class="dropdown-item" href="#">Chinese</a>
-                            <a class="dropdown-item" href="#">Mixican</a>
+                            <a class="dropdown-item " href="./cuisine.php?cuisine=Filipino">Filipino</a>
+                            <a class="dropdown-item" href="./cuisine.php?cuisine=Chinese">Chinese</a>
+                            <a class="dropdown-item" href="./cuisine.php?cuisine=Mixican">Mixican</a>
                             <!-- <div class="dropdown-divider"></div> -->
-                            <a class="dropdown-item" href="#">German</a>
-                            <a class="dropdown-item" href="#">Japanese</a>
-                            <a class="dropdown-item" href="#">Italian</a>
+                            <a class="dropdown-item" href="./cuisine.php?cuisine=German">German</a>
+                            <a class="dropdown-item" href="./cuisine.php?cuisine=Japanese">Japanese</a>
+                            <a class="dropdown-item" href="./cuisine.php?cuisine=Italian">Italian</a>
                         </div>
                     </li>
                     <li class="nav-item">
@@ -57,20 +59,26 @@ session_start();
                     </li>
                 </ul>
                 <div class="right-container">
-                    <a class="nav-link" href="./control/logout.php">Logout</a>
+
                     <div>
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" href="#">Settings</a>
                         <div class="dropdown-menu border-0 orange">
-                            <a class="dropdown-item " href="#">Profile</a>
-                            <a class="dropdown-item" href="#">Favorites</a>
+                            <a class="dropdown-item " href="../pages/profile.php">Profile</a>
+
+                            <?php
+                            if (!isset($_SESSION['id'])) { ?>
+                                <a class="dropdown-item" href="../pages/login.php">Sign-In</a>
+                            <?php } else { ?>
+
+                                <a class="dropdown-item" href="../control/logout.php">Logout</a>
+                            <?php }
+
+                            ?>
 
                         </div>
                     </div>
                 </div>
-
-
             </div>
-
         </div>
     </div>
 </nav>
