@@ -19,7 +19,35 @@
 
             </div>
         </div> -->
+            <?php
 
+            if (isset($_GET['favorites']) && isset($_SESSION['id'])) {
+                $fav = $_GET['favorites'];
+                $userId =   $_SESSION['id'];
+
+                $selectFav = "select * from favorites_tbl where recipe_id = '$fav'";
+                $resSelect = $conn->query($selectFav);
+
+                if ($resSelect->num_rows > 0) {
+                    echo "<script type = \"text/javascript\">
+window.alert('This recipe is already added to your favorites')
+</script>";
+                } else {
+                    $insert = "insert into favorites_tbl(user_id,recipe_id)value('$userId','$fav')";
+                    if ($conn->query($insert) === TRUE) {
+
+
+                        echo "<script type = \"text/javascript\">
+window.alert('Recipe added to your favorites')
+</script>";
+                    } else {
+                        echo "<script type = \"text/javascript\">
+window.alert('You need to login first')
+</script>";
+                    }
+                }
+            }
+            ?>
 
             <?php
             $sql = "SELECT recipe_tbl.`title`, recipe_tbl.`date_created`, recipe_tbl.`cuisine` , recipe_tbl.recipe_id, recipe_tbl.type, recipe_tbl.`description`, comment_tbl.`ratings`, recipe_tbl.`image` FROM recipe_tbl LEFT JOIN comment_tbl ON comment_tbl.`recipe_id` = recipe_tbl.`recipe_id`  group by recipe_tbl.recipe_id";
@@ -47,7 +75,7 @@
 
                             <div class="item">
 
-                                <a href="#">
+                                <a href="index.php?favorites=<?= $row['recipe_id'] ?>">
                                     <div class="badge">
                                         <img src="./../server/assets/images/heart1.png" alt="First slide">
                                     </div>

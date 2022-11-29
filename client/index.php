@@ -23,6 +23,7 @@ while ($row = $result1->fetch_assoc()) {
 $_SESSION['mainIngridients'] = $arr1;
 
 ?>
+
 <nav>
     <div class="container">
         <div class="row">
