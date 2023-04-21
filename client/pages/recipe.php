@@ -52,7 +52,7 @@ $_SESSION['mainIngridients'] = $arr1;
                     <li class="nav-item">
                         <a class="nav-link" href="latestRecipes.php">Latest Recipes</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" href="#">Ingredients</a>
                         <div class="dropdown-menu border-0 orange">
                             <?php
@@ -61,22 +61,20 @@ $_SESSION['mainIngridients'] = $arr1;
                             <?php endforeach;
                             ?>
                         </div>
-                    </li>
+                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" href="#">Cuisine</a>
                         <div class="dropdown-menu border-0 orange">
                             <a class="dropdown-item " href="./cuisine.php?cuisine=Filipino">Filipino</a>
-                            <a class="dropdown-item" href="./cuisine.php?cuisine=Chinese">Chinese</a>
-                            <a class="dropdown-item" href="./cuisine.php?cuisine=Mixican">Mixican</a>
-                            <!-- <div class="dropdown-divider"></div> -->
-                            <a class="dropdown-item" href="./cuisine.php?cuisine=German">German</a>
+                            <a class="dropdown-item" href="./cuisine.php?cuisine=Korean">Korean</a>
                             <a class="dropdown-item" href="./cuisine.php?cuisine=Japanese">Japanese</a>
-                            <a class="dropdown-item" href="./cuisine.php?cuisine=Italian">Italian</a>
+
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link" href="./about.php">About</a>
                     </li>
+                    <?php include "./search.php" ?>
                 </ul>
                 <div class="right-container">
 
