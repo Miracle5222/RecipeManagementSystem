@@ -1,6 +1,10 @@
 <footer>
-    <div>
-        <p>copyright 2022</p>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>Developed by <a href="#">Joanna Oracion</a>, <a href="#">Jecel Gaviola</a>, and <a href="#">Jorena Gaviola</a></p>
+            </div>
+        </div>
     </div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

@@ -16,12 +16,7 @@ session_start();
                         <div class="dropdown-menu border-0 orange">
                             <a class="dropdown-item" href="./recipes.php?recipe=breakfast">Breakfast</a>
                             <a class="dropdown-item" href="./recipes.php?recipe=Dinner">Dinner</a>
-
-                            <!-- <div class="dropdown-divider"></div> -->
                             <a class="dropdown-item" href="./recipes.php?recipe=Lunch">Lunch</a>
-
-                            <a class="dropdown-item" href="./recipes.php?recipe=Desserts">Desserts</a>
-                            <a class="dropdown-item" href="./recipes.php?recipe=Appetizer">Appetizers & Snack</a>
                         </div>
                     </li>
 
@@ -78,18 +73,17 @@ session_start();
 <section class="py-5">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 bg-light " style="padding:20px;">
+
                 <h2 class="text-success">About Us</h2>
-                <p>We are a group of I.T students from JHSCS College, who have come together to create a platform that will help students get the resources they need for their thesis, capstone, or research projects.
+                <p style="font-size: large;">Welcome to our platform! We are a team of passionate students from JHCSC School who have come together to develop a recipe management system. Our platform is designed to cater to the needs of students, restaurant owners, and food enthusiasts alike.
 
-                    As students ourselves, we understand how challenging it can be to find reliable and relevant sources of information for academic projects. With the proliferation of information on the internet, it can be overwhelming to sift through all the data and determine what is trustworthy and useful.
+                    Our team has spent countless hours researching, designing, and developing this system to ensure that it meets the highest standards of quality and usability. We understand the importance of having access to reliable and easy-to-use recipe management tools, and that's why we created this platform.
+
+                    Our system is user-friendly, allowing users to easily search for recipes based on various criteria such as cuisine, ingredients and more. We also provide a feature for users to create their recipe collections, making it easy to organize and access their favorite recipes.
+
+                    Whether you're a student looking for inspiration for your next culinary project, a restaurant owner in need of a menu revamp, or a food enthusiast searching for new recipes to try, our recipe management system has got you covered. We're excited to share our platform with you and look forward to helping you discover your next favorite recipe!
                 </p>
-                <p>
-                    Our team recognized the need for a centralized platform that could simplify the research process and provide students with access to high-quality resources. We have designed this system to be user-friendly, intuitive, and comprehensive. With our platform, students can search for thesis, capstone project, and research materials related to their field of study, and easily cite and reference them in their work.
-
-                    We believe that this system will be a valuable tool for students at JHSCS College and beyond. Our team is committed to continuously improving the platform, incorporating feedback from users, and staying up-to-date with the latest developments in research and technology.
-
-                    Thank you for visiting our page. We hope that our platform will help you achieve academic success and contribute to the advancement of knowledge in your field.</p>
 
             </div>
             <div class="col-md-6 justify-content-center align-items-center d-flex ">
@@ -98,19 +92,19 @@ session_start();
         </div>
     </div>
 </section>
-<section class="bg-light py-5 position-relative">
+<section class="bg-light py-5 " style="margin-top:250px;">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="pb-5 text-success fs 12"> School Mission And Vision</h1>
+                <h2 class="pb-5 text-success text-lg"> School Mission And Vision</h2>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <h2 class="text-success">Mission</h2>
-                <p class="">J.H. CERILLES STATE COLLEGE being an educational institution is tasked to be a change agent in an identified community whose main thrust is to institute community and extension projects and outreach services.</p>
-                <h2 class="text-success">Vision</h2>
-                <p class="fs-12">J.H. CERILLES STATE COLLEGE is in the forefront of community development particularly at the Barangay level. As leader institution, it is a vital force in the development of citizens who are capable of improving lives and the community.</p>
+                <h3 class="text-success">Mission</h3>
+                <p style="font-size: large;">J.H. CERILLES STATE COLLEGE being an educational institution is tasked to be a change agent in an identified community whose main thrust is to institute community and extension projects and outreach services.</p>
+                <h3 class="text-success">Vision</h3>
+                <p style="font-size: large;">J.H. CERILLES STATE COLLEGE is in the forefront of community development particularly at the Barangay level. As leader institution, it is a vital force in the development of citizens who are capable of improving lives and the community.</p>
 
             </div>
 

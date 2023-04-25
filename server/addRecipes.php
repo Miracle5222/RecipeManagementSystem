@@ -235,8 +235,7 @@ if (!isset($_SESSION['admin_id'])) {
                                         <option value="Breakfast">Breakfast</option>
                                         <option value="Dinner">Dinner</option>
                                         <option value="Lunch">Lunch</option>
-                                        <option value="Desserts">Desserts</option>
-                                        <option value="AppetizerSnack">Appetizer & Snack</option>
+
 
 
                                     </select>
@@ -261,11 +260,8 @@ if (!isset($_SESSION['admin_id'])) {
                                     <select class="form-select" aria-label="Default select example" required name="cuisine">
                                         <option selected>Select Cuisine</option>
                                         <option value="Filipino">Filipino</option>
-                                        <option value="Chinese">Chinese</option>
-                                        <option value="Mixican">Mixican</option>
-                                        <option value="German">German</option>
+                                        <option value="Korean">Korean</option>
                                         <option value="Japanese">Japanese</option>
-                                        <option value="Italian">Italian</option>
 
                                     </select>
 

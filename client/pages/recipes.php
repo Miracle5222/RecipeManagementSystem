@@ -14,12 +14,9 @@ session_start();
                         <div class="dropdown-menu border-0 orange">
                             <a class="dropdown-item" href="./recipes.php?recipe=breakfast">Breakfast</a>
                             <a class="dropdown-item" href="./recipes.php?recipe=Dinner">Dinner</a>
-
-                            <!-- <div class="dropdown-divider"></div> -->
                             <a class="dropdown-item" href="./recipes.php?recipe=Lunch">Lunch</a>
 
-                            <a class="dropdown-item" href="./recipes.php?recipe=Desserts">Desserts</a>
-                            <a class="dropdown-item" href="./recipes.php?recipe=AppetizerSnack">Appetizer & Snack</a>
+
                         </div>
                     </li>
 

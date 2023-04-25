@@ -65,12 +65,7 @@ $_SESSION['mainIngridients'] = $arr1;
                         <div class="dropdown-menu border-0 orange">
                             <a class="dropdown-item" href="./recipes.php?recipe=breakfast">Breakfast</a>
                             <a class="dropdown-item" href="./recipes.php?recipe=Dinner">Dinner</a>
-
-                            <!-- <div class="dropdown-divider"></div> -->
                             <a class="dropdown-item" href="./recipes.php?recipe=Lunch">Lunch</a>
-
-                            <a class="dropdown-item" href="./recipes.php?recipe=Desserts">Desserts</a>
-                            <a class="dropdown-item" href="./recipes.php?recipe=Appetizer">Appetizers & Snack</a>
                         </div>
                     </li>
 
@@ -142,7 +137,7 @@ $_SESSION['mainIngridients'] = $arr1;
                 <?php
                 $date = date('Y-m-d', strtotime('-7 days'));
 
-                $sql = "SELECT recipe_tbl.`title`, recipe_tbl.`date_created`, recipe_tbl.`cuisine` , recipe_tbl.recipe_id, recipe_tbl.type, recipe_tbl.`description`, comment_tbl.`ratings`, recipe_tbl.`image` FROM recipe_tbl LEFT JOIN comment_tbl ON comment_tbl.`recipe_id` = recipe_tbl.`recipe_id` where recipe_tbl.date_created > '$date' group by recipe_tbl.recipe_id";
+                $sql = "SELECT recipe_tbl.`title`, recipe_tbl.`date_created`, recipe_tbl.`cuisine` , recipe_tbl.recipe_id, recipe_tbl.type, recipe_tbl.`description`, comment_tbl.`ratings`, recipe_tbl.`image` FROM recipe_tbl LEFT JOIN comment_tbl ON comment_tbl.`recipe_id` = recipe_tbl.`recipe_id` where recipe_tbl.date_created > '$date' group by recipe_tbl.recipe_id limit 3";
                 $result = $conn->query($sql);
                 // $rowGlobal = $result->fetch_assoc();
                 if ($result->num_rows > 0) {
@@ -151,7 +146,7 @@ $_SESSION['mainIngridients'] = $arr1;
 
                     while ($row = $result->fetch_assoc()) {
 
-                        $sqlRatings = "   SELECT SUM(ratings) as totalRatings, COUNT(comment_id) as ratingID FROM comment_tbl where recipe_id = '$row[recipe_id]' ";
+                        $sqlRatings = "   SELECT SUM(ratings) as totalRatings, COUNT(comment_id) as ratingID FROM comment_tbl where recipe_id = '$row[recipe_id]'  ";
                         $resultRatings = $conn->query($sqlRatings);
                         $rowGlobalRatings = $resultRatings->fetch_assoc();
 
