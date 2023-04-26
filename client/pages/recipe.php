@@ -241,7 +241,7 @@ $_SESSION['mainIngridients'] = $arr1;
                                             </div>
                                         </a>
                                         <a href="recipe.php?id=<?= $row['recipe_id'] ?>">
-                                            <img class="d-block w-100 image" src="<?= "../../server/uploads/images/$row[image]" ?>" alt="First slide">
+                                            <img class=" d-block w-100 image" src="<?= "../../server/uploads/images/$row[image]" ?>" alt="First slide">
                                             <div class="title">
                                                 <div class="title-type">
                                                     <span><?= $row['type'] ?></span><span class="date"><?= $row['date_created'] ?></span>

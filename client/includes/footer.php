@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <p>Developed by <a href="#">Joanna Oracion</a>, <a href="#">Jecel Gaviola</a>, and <a href="#">Jorena Gaviola</a></p>
+                <p>Developed by <a href="https://www.facebook.com/terrencejoana21" target="_blank">Joanna Oracion</a>, <a target="_blank" href="https://www.facebook.com/profile.php?id=100070802340967">Jecel Gaviola</a>, and <a target="_blank" href="https://www.facebook.com/jorena.gaviola">Jorena Gaviola</a></p>
             </div>
         </div>
     </div>
