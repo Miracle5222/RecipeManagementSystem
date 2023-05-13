@@ -174,7 +174,8 @@ if (!isset($_SESSION['admin_id'])) {
                             $date = $_POST['date'];
                             $level = $_POST['level'];
                             $cuisine = $_POST['cuisine'];
-                            $video = $_POST['video'];
+                            $videoYou = $_POST['videoYou'];
+
                             $mainIngridients = $_POST['mainIngridients'];
 
 
@@ -189,23 +190,57 @@ if (!isset($_SESSION['admin_id'])) {
 
                                 move_uploaded_file($file_tmp, "./uploads/images/" . $file_name);
 
-                                $addquerry = "insert into recipe_tbl(title,description,type,date_created,difficulty_level,cuisine,video,image,mainIngridients) values ('$recipe','$description','$type','$date','$level ','$cuisine','$video','$file_name','$mainIngridients')";
-                                $iquery = mysqli_query($conn, $addquerry);
+                                $target_dir = "./uploads/videos/";
+                                $target_file = $target_dir . basename($_FILES["video"]["name"]);
+                                $uploadOk = 1;
+                                $videoFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-                                if ($iquery) { ?>
-                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                        <strong>Success!</strong> Recipe added successfully.
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
+                                // if (file_exists($target_file)) {
+                                //     echo "Sorry, file already exists.";
+                                //     $uploadOk = 0;
+                                // }
 
-                                <?php
+                                if ($_FILES["video"]["size"] > 50000000) {
+                                    echo "Sorry, your file is too large.";
+                                    $uploadOk = 0;
+                                }
 
-                                } else { ?>
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                        <strong> Add Recipe Failed!</strong>
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
+                                // Allow certain file formats (in this example, we only allow mp4 format)
+
+
+
+                                if ($uploadOk == 0) {
+                                    echo "Sorry, your file was not uploaded.";
+                                } else {
+                                    if (move_uploaded_file($_FILES["video"]["tmp_name"], $target_file)) {
+                                        // echo "The file " . htmlspecialchars(basename($_FILES["video"]["name"])) . " has been uploaded.";
+
+                                        // Save data to database
+
+                                        $file_names = $_FILES["video"]["name"];
+
+
+                                        $addquerry = "insert into recipe_tbl(title,description,type,date_created,difficulty_level,cuisine,video,image,mainIngridients,videoYou) values ('$recipe','$description','$type','$date','$level ','$cuisine','$videoYou','$file_name','$mainIngridients','$file_names')";
+                                        $iquery = mysqli_query($conn, $addquerry);
+
+                                        if ($iquery) { ?>
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                <strong>Success!</strong> Recipe added successfully.
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            </div>
+
+                                        <?php
+
+                                        } else { ?>
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                <strong> Add Recipe Failed!</strong>
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            </div>
                         <?php }
+                                    } else {
+                                        echo "Sorry, there was an error uploading your file.";
+                                    }
+                                }
                             }
                         }
                         ?>
@@ -278,8 +313,12 @@ if (!isset($_SESSION['admin_id'])) {
                                     </select>
                                 </div>
                                 <div class="mb-3">
+                                    <label for="video" class="form-label">Youtube Tutorial</label>
+                                    <input type="text" class="form-control" name="videoYou" placeholder="SvV49SD99DY..">
+                                </div>
+                                <div class="mb-3">
                                     <label for="video" class="form-label">Video Tutorial</label>
-                                    <input type="text" class="form-control" required name="video" placeholder="SvV49SD99DY..">
+                                    <input type="file" class="form-control" name="video">
                                 </div>
                                 <div class="mb-3">
                                     <label for="image" class="form-label">Thumbnail</label>

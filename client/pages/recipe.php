@@ -15,6 +15,19 @@ $sql1 = "SELECT distinct mainIngridients from recipe_tbl";
 $result1 = $conn->query($sql1);
 
 
+if (isset($_GET['id'])) {
+    $user_agent = $_SERVER['HTTP_USER_AGENT'];
+    $identifier = md5($user_agent);
+    $sql = "insert into views_tbl value(0,'$_GET[id]',1,'$identifier')";
+    // $sql = "UPDATE views_tbl SET views=  1 WHERE recipe_id='$_GET[id]'";
+
+    if ($conn->query($sql) === TRUE) {
+        // echo "Record updated successfully";
+        // echo "$_SERVER[HTTP_USER_AGENT]";
+    } else {
+        // echo "Error updating record: " . $conn->error;
+    }
+}
 
 
 
@@ -106,9 +119,14 @@ $_SESSION['mainIngridients'] = $arr1;
 
     <?php
     $id = $_GET['id'];
-    $sql = "SELECT  recipe_tbl.`recipe_id`, recipe_tbl.`title`, recipe_tbl.`date_created` , recipe_tbl.`type`, recipe_tbl.`cuisine` , recipe_tbl.`description`, ratings_tbl.`ratings`, recipe_tbl.video , recipe_tbl.image FROM recipe_tbl LEFT JOIN ratings_tbl ON ratings_tbl.`recipe_id` = recipe_tbl.`recipe_id`  where recipe_tbl.recipe_id = $id ";
+    $sql = "SELECT  recipe_tbl.`recipe_id`, recipe_tbl.`title`, recipe_tbl.`videoYou`,  recipe_tbl.`date_created` , recipe_tbl.`type`, recipe_tbl.`cuisine` , recipe_tbl.`description`, ratings_tbl.`ratings`, recipe_tbl.video , recipe_tbl.image FROM recipe_tbl LEFT JOIN ratings_tbl ON ratings_tbl.`recipe_id` = recipe_tbl.`recipe_id`  where recipe_tbl.recipe_id = $id ";
     $result = $conn->query($sql);
     $rowGlobal = $result->fetch_assoc();
+
+
+    $sqlViews = "SELECT COUNT(DISTINCT users) as views FROM views_tbl where recipe_id = '$_GET[id]'";
+    $resultViews = $conn->query($sqlViews);
+    $rowGlobalViews = $resultViews->fetch_assoc();
 
     ?>
     <div class="section" id="latest">
@@ -142,6 +160,15 @@ $_SESSION['mainIngridients'] = $arr1;
                         <?php    }
                         ?>
 
+                        <?php
+
+                        if ($rowGlobalViews['views'] != 0) { ?>
+                            <span class="text-primary pl-2">Views: <?php echo $rowGlobalViews['views'] ?></span>
+                        <?php  } else {    ?>
+                            <span class="text-dark">No views yet</span>
+                        <?php    }
+                        ?>
+
                     </div>
                     <div class="px-2">
                         <a href="#comment" class=" text-info">comments</a>
@@ -151,7 +178,24 @@ $_SESSION['mainIngridients'] = $arr1;
 
                 <div class="embed-responsive embed-responsive-16by9">
 
-                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/<?= $rowGlobal['video'] ?>" allowfullscreen></iframe>
+
+                    <?php
+
+                    if (!empty($rowGlobal['videoYou'])) {     ?>
+                        <video width="320" height="240" controls>
+                            <source src="../../server/uploads/videos/<?= $rowGlobal['videoYou'] ?>" type="video/mp4">
+                            <source src="../../server/uploads/videos/<?= $rowGlobal['videoYou'] ?>" type="video/ogg">
+                            Your browser does not support the video tag.
+                        </video>
+
+                    <?php  } else {     ?>
+                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/<?= $rowGlobal['video'] ?>" allowfullscreen></iframe>
+                    <?php  }  ?>
+
+
+
+
+
                 </div>
                 <div class="mt-2">
                     <h5 class="lead"><?= $rowGlobal['description'] ?></h5>
@@ -514,7 +558,7 @@ $_SESSION['mainIngridients'] = $arr1;
                 </div>
                 <?php
 
-                $sql = "SELECT user_tbl.`username`, comment_tbl.`comment`, comment_tbl.`comment_date`, comment_tbl.`ratings`, comment_tbl.`recipe_id`,comment_tbl.`comment_date`   FROM comment_tbl INNER JOIN user_tbl ON user_tbl.`user_id` = comment_tbl.`user_id` where comment_tbl.recipe_id = '$_GET[id]' group by comment_tbl.comment_id";
+                $sql = "SELECT user_tbl.`username`, comment_tbl.`comment`, comment_tbl.`comment_date`, comment_tbl.`ratings`, comment_tbl.`recipe_id`,comment_tbl.`comment_date`   FROM comment_tbl INNER JOIN user_tbl ON user_tbl.`user_id` = comment_tbl.`user_id` where comment_tbl.recipe_id = '$_GET[id]' group by comment_tbl.comment_id limit 2";
                 $result = $conn->query($sql);
 
                 if ($result->num_rows > 0) {
@@ -522,7 +566,7 @@ $_SESSION['mainIngridients'] = $arr1;
                     while ($row = $result->fetch_assoc()) {
 
                 ?>
-                        <div>
+                        <div id="txtHint">
                             <div style="width: 150px;" class="align-items-center justify-content-center mt-2">
                                 <div style="height: 40px; width: 40px ; margin-left:40px;" class="d-flex justify-content-center align-items-center">
                                     <img src="../assets/images/user.png" width="100%" height="100%" alt="profile-user">
@@ -530,8 +574,10 @@ $_SESSION['mainIngridients'] = $arr1;
 
 
                                 </div>
+
                             </div>
                             <div class=" w-100 mt-2">
+
                                 <div style="margin-left: 80px;">
                                     <div class="d-flex justify-content-between">
                                         <h6 class="m-0"><?= $row['comment'] ?></h6>
@@ -558,6 +604,7 @@ $_SESSION['mainIngridients'] = $arr1;
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     <?php
 
@@ -568,6 +615,10 @@ $_SESSION['mainIngridients'] = $arr1;
                     </div>
                 <?php }
                 ?>
+                <div class="d-flex justify-content-center mt-4">
+                    <button type="button" class="btn btn-primary" onclick="showHint()" id="show-more-button">Show More</button>
+
+                </div>
             </div>
             <div class="col-md-2">
 
@@ -655,7 +706,23 @@ $_SESSION['mainIngridients'] = $arr1;
         </div>
     </div>
 
-
+    <script>
+        function showHint(str) {
+            if (str.length == 0) {
+                document.getElementById("txtHint").innerHTML = "";
+                return;
+            } else {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("txtHint").innerHTML = this.responseText;
+                    }
+                };
+                xmlhttp.open("GET", "showMore.php", true);
+                xmlhttp.send();
+            }
+        }
+    </script>
 
 </div>
 <?php include "../includes/footer.php" ?>
