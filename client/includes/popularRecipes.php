@@ -50,7 +50,7 @@ window.alert('You need to login first')
             ?>
 
             <?php
-            $sql = "SELECT recipe_tbl.`title`, recipe_tbl.`date_created`, recipe_tbl.`cuisine` , recipe_tbl.recipe_id, recipe_tbl.type, recipe_tbl.`description`, comment_tbl.`ratings`, recipe_tbl.`image` FROM recipe_tbl LEFT JOIN comment_tbl ON comment_tbl.`recipe_id` = recipe_tbl.`recipe_id`  group by recipe_tbl.recipe_id";
+            $sql = "SELECT recipe_tbl.`title`, recipe_tbl.`date_created`, recipe_tbl.`cuisine` , recipe_tbl.recipe_id, recipe_tbl.type, recipe_tbl.`description`, comment_tbl.`ratings`, recipe_tbl.`image` FROM recipe_tbl LEFT JOIN comment_tbl ON comment_tbl.`recipe_id` = recipe_tbl.`recipe_id` where status = 'Active' group by recipe_tbl.recipe_id";
             $result = $conn->query($sql);
             // $rowGlobal = $result->fetch_assoc();
             if ($result->num_rows > 0) {

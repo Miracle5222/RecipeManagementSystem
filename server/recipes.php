@@ -146,6 +146,9 @@ if (!isset($_SESSION['admin_id'])) {
                             <a class="sidebar-link waves-effect waves-dark sidebar-link" href="recipes.php" aria-expanded="false"><i class="mdi mdi-account-network"></i><span class="hide-menu">Recipes</span></a>
                         </li>
                         <li class="sidebar-item">
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="userRecipe.php" aria-expanded="false"><i class="mdi mdi-account-network"></i><span class="hide-menu">User Recipes</span></a>
+                        </li>
+                        <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark sidebar-link" href="profile.php" aria-expanded="false"><i class="mdi mdi-account"></i><span class="hide-menu">Profile</span></a>
                         </li>
 
@@ -252,7 +255,7 @@ if (!isset($_SESSION['admin_id'])) {
                             <tbody>
                                 <?php
 
-                                $sql = "SELECT * FROM recipe_tbl";
+                                $sql = "SELECT * FROM recipe_tbl where status = 'active'";
                                 $result = $conn->query($sql);
 
                                 if ($result->num_rows > 0) {
@@ -291,12 +294,16 @@ if (!isset($_SESSION['admin_id'])) {
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Position</th>
-                                    <th>Office</th>
-                                    <th>Age</th>
-                                    <th>Start date</th>
-                                    <th>Salary</th>
+                                    <th>Recipe ID</th>
+                                    <th>title</th>
+                                    <th>Description</th>
+                                    <th>Type</th>
+                                    <th>date_created</th>
+                                    <th>Difficulty Level</th>
+                                    <th>Cuisine</th>
+                                    <!-- <th>Video ID</th> -->
+                                    <th>Main Ingridients</th>
+                                    <th>Edit</th>
                                 </tr>
                             </tfoot>
                         </table>

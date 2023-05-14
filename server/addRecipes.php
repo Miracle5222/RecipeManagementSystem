@@ -137,6 +137,9 @@ if (!isset($_SESSION['admin_id'])) {
                             <a class="sidebar-link waves-effect waves-dark sidebar-link" href="recipes.php" aria-expanded="false"><i class="mdi mdi-account-network"></i><span class="hide-menu">Recipes</span></a>
                         </li>
                         <li class="sidebar-item">
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="userRecipe.php" aria-expanded="false"><i class="mdi mdi-account-network"></i><span class="hide-menu">User Recipes</span></a>
+                        </li>
+                        <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark sidebar-link" href="profile.php" aria-expanded="false"><i class="mdi mdi-account"></i><span class="hide-menu">Profile</span></a>
                         </li>
 
@@ -220,7 +223,7 @@ if (!isset($_SESSION['admin_id'])) {
                                         $file_names = $_FILES["video"]["name"];
 
 
-                                        $addquerry = "insert into recipe_tbl(title,description,type,date_created,difficulty_level,cuisine,video,image,mainIngridients,videoYou) values ('$recipe','$description','$type','$date','$level ','$cuisine','$videoYou','$file_name','$mainIngridients','$file_names')";
+                                        $addquerry = "insert into recipe_tbl(title,description,type,date_created,difficulty_level,cuisine,video,image,mainIngridients,videoYou,status) values ('$recipe','$description','$type','$date','$level ','$cuisine','$videoYou','$file_name','$mainIngridients','$file_names','Active')";
                                         $iquery = mysqli_query($conn, $addquerry);
 
                                         if ($iquery) { ?>
