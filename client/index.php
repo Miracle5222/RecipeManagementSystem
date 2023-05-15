@@ -29,7 +29,7 @@ $_SESSION['mainIngridients'] = $arr1;
         <div class="row">
 
             <div class="nav-container">
-                <a class="navbar-brand" href="index.php">Recipe Management System</a>
+                <a class="navbar-brand" href="index.php">Online Recipe Guide for Home Cook</a>
 
 
                 <ul class="nav">

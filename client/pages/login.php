@@ -8,7 +8,7 @@ session_start();
         <div class="row">
 
             <div class="nav-container">
-                <a class="nav-link" href="../index.php">Recipe Management System</a>
+                <a class="nav-link" href="../index.php">Online Recipe Guide for Home Cook</a>
                 <ul class="nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Recipes</a>
