@@ -213,7 +213,7 @@ if (!isset($_SESSION['admin_id'])) {
                                     }
                                     ?>
                                     <div class="card ">
-                                        <h2 class="p-4 text-info text-center">Edit Directions</h2>
+                                        <h2 class="p-4 text-info text-center">Edit Ingredients</h2>
                                     </div>
                                     <?php
                                     if (isset($_GET['id'])) {

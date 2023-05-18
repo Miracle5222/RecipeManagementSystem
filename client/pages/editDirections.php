@@ -99,67 +99,94 @@ session_start();
         <a href="./addUserRecipe.php" class="btn btn-outline-info">Add more Recipe</a>
     </div>
     <div class="row bg-light p-4 mt-4 mb-6">
-
-
-        <table id="recipe_table" class="table table-striped" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Recipe ID</th>
-                    <th>Recipe Name</th>
-                    <th>Description</th>
-                    <th>Type</th>
-                    <th>date_created</th>
-                    <th>Difficulty</th>
-                    <th>Request Status</th>
-                    <!-- <th>Video ID</th> -->
-                    <th>User ID</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="col-md-8">
+            <div class="col-md-6">
                 <?php
+                if (isset($_POST['editDirection'])) {
+                    $d_Id = $_GET['d_Id'];
+                    $id = $_POST['recipe'];
+                    $steps = $_POST['steps'];
+                    $directions = $_POST['direction'];
 
-                $sql = "SELECT * FROM userrecipe_tbl INNER JOIN recipe_tbl ON recipe_tbl.`recipe_id` = userrecipe_tbl.`recipe_id` INNER JOIN user_tbl ON user_tbl.`user_id` = userrecipe_tbl.`user_id` where userrecipe_tbl.user_id = '    $_SESSION[id]'";
-                $result = $conn->query($sql);
+                    $sql = "UPDATE directions_tbl SET heading = '$steps', directions = '$directions', recipe_id = '$id' WHERE directions_id = '$d_Id'";
 
-                if ($result->num_rows > 0) {
-                    // output data of each row
-                    while ($row = $result->fetch_assoc()) {
-
+                    if ($conn->query($sql) === TRUE) {
                 ?>
-                        <tr>
-                            <td> <a href="recipeInfo.php?id=<?= $row['recipe_id'] ?>&image=<?= $row['image'] ?>" class=" btn btn-dark text-white">View Recipe</a></td>
-                            <td><?= $row['title'] ?></td>
-                            <td><span class="d-block text-truncate" style="max-width: 150px;">
-                                    <?= $row['description'] ?>
-                                </span></td>
-                            <td><?= $row['type'] ?></td>
-                            <td><?= $row['date_created'] ?></td>
-                            <td><?= $row['difficulty_level'] ?></td>
-                            <td><?= $row['recipeStatus'] ?></td>
-                            <!-- <td><?= $row['video'] ?></td> -->
-                            <td><?= $row['user_id'] ?></td>
-
-                            <td>
-                                <div class="d-flex justify-content-between align-items-center flex-row ">
-                                    <a href="userRecipeInfo.php?id=<?= $row['recipe_id'] ?>&image=<?= $row['image'] ?>" class="mx-2 btn btn-info">Edit</a>
-                                    <a onclick="confirm('are you sure you want to delete this recipe?')" href="./deleteUserRecipe.php?recipe_id=<?= $row['recipe_id'] ?>" class="mx-2   btn btn-danger text-white">Delete</a>
-                                    <!-- <a href="./addIngridients.php?recipeId=<?= $row['recipe_id'] ?>" class=" btn btn-dark text-white">Ingridients</a> -->
-                                </div>
-                            </td>
-                        </tr>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            Directions Updated successfully.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    <?php
+                    } else {
+                    ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            Failed to update Directions.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                 <?php
-
                     }
-                } else {
                 }
-                $conn->close(); ?>
+                ?>
+                <div class="card">
+                    <h2 class="p-4 text-info text-center">Edit Directions</h2>
+                </div>
+                <?php
+                if (isset($_GET['id'])) {
+                    $sql = "SELECT * FROM directions_tbl WHERE recipe_id = '$_GET[id]' AND directions_id = '$_GET[d_Id]'";
+                    $result = $conn->query($sql);
+                    $row = $result->fetch_assoc();
+                ?>
+                    <div class="card p-4">
+                        <form class="form-horizontal form-material" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="recipe" class="form-label">Recipe ID</label>
+                                <?php if (isset($_GET['id'])) { ?>
+                                    <input type="text" class="form-control" name="recipe" value="<?= $_GET['id'] ?>" placeholder="Recipe ID">
+                                <?php } else { ?>
+                                    <input type="text" class="form-control" name="recipe" placeholder="Recipe ID">
+                                <?php } ?>
+                            </div>
+                            <div class="form-group">
+                                <label for="steps" class="form-label">Step</label>
+                                <?php if (isset($_GET['id'])) { ?>
+                                    <input type="text" class="form-control" name="steps" value="<?= $row['heading'] ?>" placeholder="Steps">
+                                <?php } else { ?>
+                                    <input type="text" class="form-control" name="steps" placeholder="Steps">
+                                <?php } ?>
+                            </div>
+                            <div class="form-group">
+                                <label for="direction" class="form-label">Direction</label>
+                                <?php if (isset($_GET['id'])) { ?>
+                                    <textarea class="form-control" name="direction" rows="5" placeholder="Direction.."><?= $row['directions'] ?></textarea>
+                                <?php } else { ?>
+                                    <textarea class="form-control" rows="5" name="direction" placeholder="Direction.."><?= $row['directions'] ?></textarea>
+                                <?php } ?>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" class="btn btn-success text-white" name="editDirection" value="Submit">
+                                <a href="userRecipeInfo.php?id=<?= $_GET['id'] ?>&image=<?= $_GET['image'] ?>" class="btn btn-outline-success">Back</a>
+                            </div>
+                        </form>
+                    </div>
+                <?php } ?>
+            </div>
 
-            </tbody>
+        </div>
 
-        </table>
+
+
 
     </div>
+
+</div>
+
+
+
+</div>
 
 </div>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">

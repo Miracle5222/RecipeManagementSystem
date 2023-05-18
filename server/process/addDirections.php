@@ -10,11 +10,6 @@ if (isset($_POST['submit'])) {
     $id = $_GET['id'];
     $image = $_GET['image'];
 
-    echo $id;
-    echo $image;
-    echo $steps;
-    echo $direction;
-    echo $recipe;
 
 
 

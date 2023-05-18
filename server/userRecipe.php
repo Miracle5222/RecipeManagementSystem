@@ -294,12 +294,16 @@ if (!isset($_SESSION['admin_id'])) {
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Position</th>
-                                    <th>Office</th>
-                                    <th>Age</th>
-                                    <th>Start date</th>
-                                    <th>Salary</th>
+                                    <th>Recipe ID</th>
+                                    <th>Recipe Name</th>
+                                    <th>Description</th>
+                                    <th>Type</th>
+                                    <th>date_created</th>
+                                    <th>Request Status</th>
+                                    <th>Cuisine</th>
+                                    <!-- <th>Video ID</th> -->
+                                    <th>User ID</th>
+                                    <th>Action</th>
                                 </tr>
                             </tfoot>
                         </table>

@@ -82,7 +82,8 @@ $_SESSION['mainIngridients'] = $arr1;
                             if (!isset($_SESSION['id'])) { ?>
                                 <a class="dropdown-item" href="./pages/login.php">Sign-In</a>
                             <?php } else { ?>
-
+                                <a class="dropdown-item" href="./pages/addUserRecipe.php">Add Recipe</a>
+                                <a class="dropdown-item" href="./pages/myrecipes.php">My Recipe</a>
                                 <a class="dropdown-item" href="./control/logout.php">Logout</a>
                             <?php }
 
