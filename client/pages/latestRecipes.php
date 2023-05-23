@@ -136,7 +136,7 @@ $_SESSION['mainIngridients'] = $arr1;
         <div class="boxThumbnail">
             <div class="gridContainer">
                 <?php
-                $date = date('Y-m-d', strtotime('-7 days'));
+                $date = date('Y-m-d', strtotime('-3 days'));
 
                 $sql = "SELECT recipe_tbl.`title`, recipe_tbl.`date_created`, recipe_tbl.`cuisine` , recipe_tbl.recipe_id, recipe_tbl.type, recipe_tbl.`description`, comment_tbl.`ratings`, recipe_tbl.`image` FROM recipe_tbl LEFT JOIN comment_tbl ON comment_tbl.`recipe_id` = recipe_tbl.`recipe_id` where recipe_tbl.date_created > '$date' and status = 'Active' group by recipe_tbl.recipe_id limit 5";
                 $result = $conn->query($sql);
