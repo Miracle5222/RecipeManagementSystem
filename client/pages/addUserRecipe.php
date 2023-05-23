@@ -100,7 +100,7 @@ session_start();
                     $level = $_POST['level'];
                     $cuisine = $_POST['cuisine'];
                     $videoYou = $_POST['videoYou'];
-
+                    $cookName = $_POST['cookName'];
                     $mainIngridients = $_POST['mainIngridients'];
 
 
@@ -155,7 +155,7 @@ session_start();
                                     $file_names = $_FILES["video"]["name"];
 
 
-                                    $addquerry = "insert into recipe_tbl(title,description,type,date_created,difficulty_level,cuisine,video,image,mainIngridients,videoYou,status) values ('$recipe','$description','$type','$date','$level ','$cuisine','$videoYou','$file_name','$mainIngridients','$file_names','Pending...')";
+                                    $addquerry = "insert into recipe_tbl(title,description,type,date_created,difficulty_level,cuisine,video,image,mainIngridients,videoYou,status,authorName) values ('$recipe','$description','$type','$date','$level ','$cuisine','$videoYou','$file_name','$mainIngridients','$file_names','Pending...','$cookName')";
                                     $iquery = mysqli_query($conn, $addquerry);
 
                                     if ($iquery) { ?>
@@ -220,6 +220,10 @@ session_start();
                 </div>
                 <div class="card p-4">
                     <form class="form-horizontal form-material" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="recipe" class="form-label">Cook Name</label>
+                            <input type="text" class="form-control" required name="cookName" placeholder="Max Well">
+                        </div>
                         <div class="mb-3">
                             <label for="recipe" class="form-label">Recipe</label>
                             <input type="text" class="form-control" required name="recipe" placeholder="Chicken curry..">

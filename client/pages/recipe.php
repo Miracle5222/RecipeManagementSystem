@@ -16,17 +16,46 @@ $result1 = $conn->query($sql1);
 
 
 if (isset($_GET['id'])) {
-    $user_agent = $_SERVER['HTTP_USER_AGENT'];
-    $identifier = md5($user_agent);
-    $sql = "insert into views_tbl value(0,'$_GET[id]',1,'$identifier')";
-    // $sql = "UPDATE views_tbl SET views=  1 WHERE recipe_id='$_GET[id]'";
 
-    if ($conn->query($sql) === TRUE) {
-        // echo "Record updated successfully";
-        // echo "$_SERVER[HTTP_USER_AGENT]";
+    if (isset($_SESSION['id'])) {
+        $identifier = md5($_SESSION['id']);
+        $sql = "insert into views_tbl value(0,'$_GET[id]',1,'$identifier')";
+        // $sql = "UPDATE views_tbl SET views=  1 WHERE recipe_id='$_GET[id]'";
+
+        if ($conn->query($sql) === TRUE) {
+            // echo "Record updated successfully";
+            // echo "$_SERVER[HTTP_USER_AGENT]";
+        } else {
+            // echo "Error updating record: " . $conn->error;
+        }
     } else {
-        // echo "Error updating record: " . $conn->error;
+        $identifier = md5($_SERVER['HTTP_USER_AGENT']);
+        $sql = "insert into views_tbl value(0,'$_GET[id]',1,'$identifier')";
+        // $sql = "UPDATE views_tbl SET views=  1 WHERE recipe_id='$_GET[id]'";
+
+        if ($conn->query($sql) === TRUE) {
+            // echo "Record updated successfully";
+            // echo "$_SERVER[HTTP_USER_AGENT]";
+        } else {
+            // echo "Error updating record: " . $conn->error;
+        }
     }
+
+    // $identifier = md5($_SESSION['id']);
+    // $sql = "insert into views_tbl value(0,'$_GET[id]',1,'$identifier')";
+
+
+    // if ($conn->query($sql) === TRUE) {
+
+    // } else {
+
+    // }
+
+
+
+
+
+
 }
 
 
@@ -120,7 +149,7 @@ $_SESSION['mainIngridients'] = $arr1;
 
     <?php
     $id = $_GET['id'];
-    $sql = "SELECT  recipe_tbl.`recipe_id`, recipe_tbl.`title`, recipe_tbl.`videoYou`,  recipe_tbl.`date_created` , recipe_tbl.`type`, recipe_tbl.`cuisine` , recipe_tbl.`description`, ratings_tbl.`ratings`, recipe_tbl.video , recipe_tbl.image FROM recipe_tbl LEFT JOIN ratings_tbl ON ratings_tbl.`recipe_id` = recipe_tbl.`recipe_id`  where recipe_tbl.recipe_id = $id ";
+    $sql = "SELECT  recipe_tbl.`recipe_id`, recipe_tbl.`title`, recipe_tbl.`videoYou`, recipe_tbl.`authorName`,  recipe_tbl.`date_created` , recipe_tbl.`type`, recipe_tbl.`cuisine` , recipe_tbl.`description`, ratings_tbl.`ratings`, recipe_tbl.video , recipe_tbl.image FROM recipe_tbl LEFT JOIN ratings_tbl ON ratings_tbl.`recipe_id` = recipe_tbl.`recipe_id`  where recipe_tbl.recipe_id = $id ";
     $result = $conn->query($sql);
     $rowGlobal = $result->fetch_assoc();
 
@@ -134,8 +163,8 @@ $_SESSION['mainIngridients'] = $arr1;
 
 
         <div class="row">
-            <div class="col-8 my-4">
-                <div class="d-flex align-items-center justify-content-around " style="height: 50px;">
+            <div class="col-md-8 my-4">
+                <div class="d-flex align-items-center justify-content-between " style="height: 50px;">
                     <div class="title p-0 px-2">
                         <h2 style="color:#ff2f01"><?= $rowGlobal['title'] ?></h2>
                     </div>
@@ -176,6 +205,19 @@ $_SESSION['mainIngridients'] = $arr1;
                     </div>
 
                 </div>
+
+
+
+                <div class="my-2">
+                    <?php
+                    if ($rowGlobal['authorName'] != "") {   ?>
+                        <span> By <strong> <?= $rowGlobal['authorName'] ?></strong> | Published on <small><?= $rowGlobal['date_created'] ?></small></span>
+                    <?php  }
+
+                    ?>
+                </div>
+
+
 
                 <div class="embed-responsive embed-responsive-16by9">
 
@@ -225,12 +267,8 @@ $_SESSION['mainIngridients'] = $arr1;
 
                             ?>
                                     <tr>
-
                                         <!-- <td><?= $row['ingridient_id'] ?></td> -->
                                         <td><?= $row['ingridient_name'] ?></td>
-
-
-
 
                                     </tr>
                                 <?php
@@ -252,6 +290,376 @@ $_SESSION['mainIngridients'] = $arr1;
 
                     <img class="d-block w-100 image" style="background-size:cover; background-position:center;background-repeat:no-repeat;height:100%" src="<?= "../../server/uploads/images/$rowGlobal[image]" ?>" alt="recipe">
                 </div>
+                <div class="my-4">
+                    <h3>Directions</h3>
+                    <ol class="list-group list-group-numbered my-4">
+
+
+                        <?php
+
+                        $sql = "SELECT * FROM directions_tbl where  recipe_id = '$_GET[id]' ";
+                        $result = $conn->query($sql);
+
+                        if ($result->num_rows > 0) {
+                            // output data of each row
+                            while ($row = $result->fetch_assoc()) {
+
+                        ?>
+
+                                <li class="list-group-item fs-4 p-0  border-0 font-weight-bold">
+                                    <h4>Step<?= $row['heading'] ?></h4>
+                                </li>
+                                <li class="list-group-item border-0 fs-5 "><?= $row['directions'] ?>
+
+                                </li>
+
+                            <?php
+
+                            }
+                        } else { ?>
+                            <li class="list-group-item border-0 text-center fs-4">No Directions Available</li>
+                        <?php  }
+                        ?>
+                    </ol>
+                </div>
+
+                <div class="col-md-10 ">
+                    <div style="height: 200px;" class="bg-dark d-flex justify-content-center align-items-center">
+                        <h4 class="text-center text-white">Reviews</h4>
+
+
+                    </div>
+                    <div class="card p-4 bg-light">
+                        <?php
+
+                        if (isset($_POST['submit'])) {
+                            $date = date("Y-m-d");
+                            $comment = $_POST['comment'];
+                            $ratings = $_POST['ratings'];
+
+                            $selectUser = "select * from comment_tbl where recipe_id = '$_GET[id]' and user_id = ' $_SESSION[id]'";
+                            $getUser = mysqli_query($conn, $selectUser);
+
+                            if ($getUser->num_rows <= 0) {
+                                $addquerry = "insert into comment_tbl(recipe_id,user_id,comment,comment_date,ratings)values('$_GET[id]',' $_SESSION[id]','$comment','$date','$ratings')";
+                                $iquery = mysqli_query($conn, $addquerry);
+
+
+
+                                if ($iquery) { ?>
+                                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                        your comment is being review...
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+
+                                <?php  } else { ?>
+
+                                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                        Make sure the field is not empty
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                <?php }
+                            } else { ?>
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                    You already commented on this recipe
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                        <?php   }
+
+
+                            // echo $comment;
+                            // echo $ratings;
+                            // echo $_GET['id'];
+                            // echo $_SESSION['id'];
+
+
+                        }
+
+                        ?>
+                        <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                            <div style="width: 150px;" class="align-items-start justify-content-center">
+                                <div style="height: 40px; width: 40px ; margin-left:40px;" class="d-flex justify-content-center align-items-center">
+                                    <img src="../assets/images/user.png" width="100%" height="100%" alt="profile-user">
+
+                                    <?php
+                                    if (!isset($_SESSION['id'])) { ?>
+                                        <span class="pl-2"></span>
+                                    <?php    } else { ?>
+
+                                        <span class="pl-2">Name: <?= $_SESSION['username'] ?></span>
+                                    <?php }
+
+                                    ?>
+
+                                </div>
+                            </div>
+                            <div class=" w-100 mt-2" id="comment">
+                                <form method="POST" enctype="multipart/form-data">
+
+                                    <div class="d-flex flex-row mt-2 justify-content-between">
+
+                                        <!-- <label class="form-label" for="">Rate: </label> -->
+                                        <select style="width: 80px; " class=" form-control" id="exampleFormControlSelect1" name="ratings">
+                                            <?php
+                                            $rate;
+                                            for ($rate = 1; $rate <= 5; $rate++) { ?>
+
+                                                <option value=" <?= $rate ?>"><?= $rate ?></option>
+                                            <?php  } ?>
+
+
+                                        </select>
+
+
+                                        <?php
+                                        $star;
+                                        for ($star = 1; $star <= 5; $star++) { ?>
+                                            <div style=" width: 28px; height: 18px;margin:2px;">
+
+                                                <a href=""> <img width="100%" height="100%" src=" ../../server/uploads/images/star.png " alt=" ratings"></a>
+                                                <!-- <span style="margin-left: 10px;"><?php echo $star ?></span> -->
+
+                                            </div>
+
+                                        <?php  } ?>
+
+                                    </div>
+
+
+                                    <div class="form-group m-0">
+                                        <label class="form-label" for=""></label>
+
+                                        <textarea name="comment" id="" required class="form-control" cols="10" placeholder="type comment..." rows="3"></textarea>
+                                    </div>
+                                    <div class="form-group " style="float: right; margin-top:15px;">
+
+                                        <?php
+                                        if (!isset($_SESSION['id'])) { ?>
+                                            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                            Sign-In First
+                                        </button> -->
+                                            <a href="login.php">Sign-In First</a>
+                                        <?php  } else { ?>
+
+                                            <input type="submit" value="Submit" name="submit" class="btn btn-info">
+                                        <?php }
+
+                                        ?>
+
+
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+
+                            <?php
+                            if (isset($_POST["submitUser"])) {
+
+                                $sql = "SELECT * from user_tbl";
+                                $result = $conn->query($sql);
+
+                                $username = $_POST['username'];
+                                $password = $_POST['password'];
+                                // echo $username;
+
+                                if ($result->num_rows > 0) {
+
+                                    while ($row = $result->fetch_assoc()) {
+                                        if ($username == $row['username'] && $password == $row["password"]) {
+                                            $_SESSION['id'] = $row['user_id'];
+                                            $_SESSION['username'] = $row['username'];
+                                            $_SESSION['email'] = $row['email'];
+
+                                            // echo "<script type = \"text/javascript\">
+                                            // window.location = (\"recipe.php?id=$_GET[id]#comment\")
+                                            // </script>";
+                                        } else {
+                                        }
+                                    }
+                                } else {
+                                    echo "no records found";
+                                }
+                            }
+                            ?>
+                            <!-- Modal -->
+
+                        </div>
+                    </div>
+
+                    <!-- input form handler -->
+                    <?php
+
+                    if (isset($_POST['submitComment'])) {
+                        $id = $_POST['commentId'];
+                        $comment = $_POST['comment'];
+                        $user = $_SESSION['id'];
+                        $currentDate = date("Y-m-d");
+
+                        $sql = "INSERT INTO mycomments_tbl (comment_id,comment,user_id,comment_date) value('$id', '$comment','$user','$currentDate')";
+
+                        if ($conn->query($sql) === TRUE) {
+                            // echo "New record created successfully";
+                        } else {
+                            // echo "Error: " . $sql . "<br>" . $conn->error;
+                        }
+                    } ?>
+
+
+
+                    <?php
+                    $sql = "SELECT user_tbl.username, comment_tbl.comment_id,  comment_tbl.comment, comment_tbl.comment_date, comment_tbl.ratings, comment_tbl.recipe_id, comment_tbl.comment_date 
+        FROM comment_tbl 
+        INNER JOIN user_tbl ON user_tbl.user_id = comment_tbl.user_id 
+        WHERE comment_tbl.recipe_id = '$_GET[id]' 
+        GROUP BY comment_tbl.comment_id 
+        ";
+                    $result = $conn->query($sql);
+
+                    if ($result->num_rows > 0) {
+                        // Output data of each row
+                        while ($row = $result->fetch_assoc()) {
+                    ?>
+                            <div>
+                                <div class="align-items-center justify-content-center mt-2">
+                                    <div style="height: 40px; width: 93%; margin-left: 40px;" class="d-flex justify-content-between align-items-center ">
+                                        <div>
+                                            <img src="../assets/images/user.png" width="40px" height="40px" alt="profile-user">
+                                            <span class="pl-2"><?= $row['username'] ?></span>
+                                        </div>
+                                        <div style="height:20px;">
+
+                                            <?php if (isset($_SESSION['id'])) { ?>
+
+                                                <button class="btn btn-success px-lg-4" onclick="likesUp(this.value)" id="likes" value="<?= $row['comment_id'] ?>"><i class="bi bi-hand-thumbs-up">1</i></button>
+                                                <button class="btn btn-dark px-lg-4" onclick="likesDown(this.value)" id="likesDown" value="<?= $row['comment_id'] ?>"><i class="bi bi-hand-thumbs-down"> 2</i></button>
+                                                <button class="btn btn-outline-info px-lg-4" onclick="inputForm(this.value)" value="<?= $row['comment_id'] ?>"><i class="bi bi-reply "></i></button>
+
+
+
+                                            <?php   } else {  ?>
+                                                <?php
+
+                                                ?>
+                                                <button class="btn btn-success px-lg-4" onclick="return alert('Login first')"><i class="bi bi-hand-thumbs-up">1</i></button>
+                                                <button class="btn btn-dark px-lg-4" onclick="return alert('Login first')"><i class="bi bi-hand-thumbs-down"> 2</i></button>
+
+
+                                            <?php    } ?>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="w-100 mt-4">
+                                    <div style="margin-left: 80px;" class="bg-light p-3">
+                                        <div class=" d-flex justify-content-between ">
+                                            <span class="lead"><?= $row['comment'] ?></span>
+                                            <div class="d-flex align-items-center" style="float: right;">
+                                                <?php
+                                                if ($row['ratings'] != 0) {
+                                                    for ($ratings = 1; $ratings <= $row['ratings']; $ratings++) {
+                                                ?>
+                                                        <div style="height: 15px;" class="mx-2">
+                                                            <img class="d-block image" src="../../server/uploads/images/star.png" alt="ratings">
+                                                        </div>
+                                                    <?php
+                                                    }
+                                                    ?>
+                                                    <span class="ml-4"><?= $row['comment_date'] ?></span>
+                                                <?php
+                                                }
+                                                ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <!-- reply form -->
+                            <div id="inputForm">
+
+                            </div>
+
+
+                            <?php
+                            $sql = "  SELECT * FROM mycomments_tbl INNER JOIN user_tbl ON user_tbl.`user_id` = mycomments_tbl.`user_id` WHERE mycomments_tbl.`comment_id` = '$row[comment_id]'";
+                            $result = $conn->query($sql);
+
+                            if ($result->num_rows > 0) {
+                                // Output data of each row
+                                while ($row = $result->fetch_assoc()) {
+
+                            ?>
+
+
+                                    <div>
+                                        <div class="align-items-center justify-content-center ml-lg-5 mt-2">
+                                            <div style="height: 40px; width: 93%; margin-left: 40px;" class="d-flex justify-content-between align-items-center ">
+                                                <div>
+                                                    <img src="../assets/images/man.png" width="40px" height="40px" alt="profile-user">
+                                                    <span class="pl-2"><?= $row['username'] ?></span>
+                                                </div>
+                                                <!-- <div style="height:20px;">
+                                                    <button class="btn btn-info px-lg-4"><i class="bi bi-hand-thumbs-up">1</i></button>
+                                                    <button class="btn btn-dark px-lg-4"><i class="bi bi-hand-thumbs-down"> 2</i></button>
+
+                                                </div> -->
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="w-100 mt-4">
+                                            <div style="margin-left: 120px;" class="bg-light p-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="lead"><?= $row['comment'] ?></span>
+                                                    <div class="d-flex" style="float: right;">
+
+                                                        <span class="ml-4"><?= $row['comment_date'] ?></span>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                            <?php
+                                }
+                            } ?>
+                        <?php
+                        }
+                    } else {
+                        ?>
+                        <div class="bg-light my-4 p-4">
+                            <h3 class="lead">No comments available</h3>
+                        </div>
+                    <?php
+                    }
+                    ?>
+
+
+                </div>
+                <!-- <div class="d-flex justify-content-center mt-4">
+                    <button type="button" class="btn btn-primary" onclick="showMoreComments()" id="show-more-button">Show More</button>
+                </div> -->
+
+
+
             </div>
             <div class="col-md-4 my-4">
 
@@ -264,7 +672,7 @@ $_SESSION['mainIngridients'] = $arr1;
 
 
                         <?php
-                        $sql = "SELECT recipe_tbl.`title`, recipe_tbl.`date_created`, recipe_tbl.`cuisine` ,recipe_tbl.`type` , recipe_tbl.recipe_id, recipe_tbl.`description`, ratings_tbl.`ratings`, recipe_tbl.`image` FROM recipe_tbl LEFT JOIN ratings_tbl ON ratings_tbl.`recipe_id` = recipe_tbl.`recipe_id` group by recipe_tbl.title limit 4";
+                        $sql = "SELECT recipe_tbl.`title`, recipe_tbl.`date_created`, recipe_tbl.`cuisine` ,recipe_tbl.`type` , recipe_tbl.recipe_id, recipe_tbl.`description`, ratings_tbl.`ratings`, recipe_tbl.`image` FROM recipe_tbl LEFT JOIN ratings_tbl ON ratings_tbl.`recipe_id` = recipe_tbl.`recipe_id` group by recipe_tbl.title ";
                         $result = $conn->query($sql);
 
                         if ($result->num_rows > 0) {
@@ -327,313 +735,95 @@ $_SESSION['mainIngridients'] = $arr1;
                         ?>
                     </div>
                 </div>
+
+
+
+                <div class="mt-4">
+                    <div class="section-header">
+                        <h1>Related Recipes</h1>
+
+                    </div>
+                    <div class="boxThumbnail">
+                        <div class="gridContainer">
+
+
+                            <?php
+                            $sql = "SELECT recipe_tbl.`title`, recipe_tbl.`date_created`,  recipe_tbl.`type`, recipe_tbl.`cuisine` , recipe_tbl.recipe_id, recipe_tbl.`description`, ratings_tbl.`ratings`, recipe_tbl.`image` FROM recipe_tbl LEFT JOIN ratings_tbl ON ratings_tbl.`recipe_id` = recipe_tbl.`recipe_id` where recipe_tbl.type = '$rowGlobal[type]' group by recipe_tbl.title limit 4";
+                            $result = $conn->query($sql);
+
+                            if ($result->num_rows > 0) {
+
+
+                                while ($row = $result->fetch_assoc()) {
+
+                                    $sqlRatings = "   SELECT SUM(ratings) as totalRatings, COUNT(comment_id) as ratingID FROM comment_tbl where recipe_id = '$row[recipe_id]' ";
+                                    $resultRatings = $conn->query($sqlRatings);
+                                    $rowGlobalRatings = $resultRatings->fetch_assoc();
+
+                            ?>
+                                    <div class="items">
+
+                                        <div class="item">
+
+                                            <a href="#">
+                                                <div class="badge">
+                                                    <img src="../../server/assets/images/heart1.png" alt="First slide">
+                                                </div>
+                                            </a>
+                                            <a href="recipe.php?id=<?= $row['recipe_id'] ?>">
+                                                <img class="d-block w-100 image" src="<?= "../../server/uploads/images/$row[image]" ?>" alt="First slide">
+                                                <div class="title">
+                                                    <div class="title-type">
+                                                        <span><?= $row['type'] ?></span><span class="date"><?= $row['date_created'] ?></span>
+                                                    </div>
+                                                    <h4><?= $row['title'] ?></h4>
+                                                    <div class="d-flex align-items-center">
+                                                        <?php
+
+                                                        if ($rowGlobalRatings['totalRatings'] != 0) { ?>
+                                                            <?php for ($ratings = 1; $ratings <= round($rowGlobalRatings['totalRatings']   / $rowGlobalRatings['ratingID']); $ratings++) {
+
+
+                                                            ?>
+                                                                <div style="width: 35px; height: 28px;">
+                                                                    <img class="d-block w-100 image" src="../../server/uploads/images/star.png " alt="ratings">
+                                                                </div>
+
+                                                            <?php     } ?>
+                                                            <?php if ($rowGlobalRatings['totalRatings'] != 0) { ?>
+                                                                <span class="text-dark pl-2"><?php echo round($rowGlobalRatings['totalRatings']   / $rowGlobalRatings['ratingID'], 1)  ?></span>
+                                                            <?php  } else {    ?>
+                                                                <span class="text-dark pl-2"></span>
+                                                            <?php    }
+                                                            ?>
+
+                                                        <?php  }
+                                                        ?>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                    </div>
+                            <?php  }
+                            } else {
+                                echo "no records found";
+                            }
+                            $conn->close();
+                            ?>
+                        </div>
+                    </div>
+                </div>
+
+
+
             </div>
         </div>
 
 
         <div class="row">
             <div class="col-md-6">
-                <h3>Directions</h3>
-                <ol class="list-group list-group-numbered my-4">
 
-
-                    <?php
-
-                    $sql = "SELECT * FROM directions_tbl where  recipe_id = '$_GET[id]' ";
-                    $result = $conn->query($sql);
-
-                    if ($result->num_rows > 0) {
-                        // output data of each row
-                        while ($row = $result->fetch_assoc()) {
-
-                    ?>
-
-                            <li class="list-group-item fs-4 p-0  border-0 font-weight-bold">
-                                <h4>Step<?= $row['heading'] ?></h4>
-                            </li>
-                            <li class="list-group-item border-0 fs-5"><?= $row['directions'] ?>
-
-                            </li>
-
-                        <?php
-
-                        }
-                    } else { ?>
-                        <li class="list-group-item border-0 text-center fs-4">No Directions Available</li>
-                    <?php  }
-                    ?>
-                </ol>
-
-                <div style="height: 200px;" class="bg-dark d-flex justify-content-center align-items-center">
-                    <h4 class="text-center text-white">Reviews</h4>
-
-
-                </div>
-                <div class="card p-4 bg-light">
-                    <?php
-
-                    if (isset($_POST['submit'])) {
-                        $date = date("Y-m-d");
-                        $comment = $_POST['comment'];
-                        $ratings = $_POST['ratings'];
-                        // echo $comment;
-                        // echo $ratings;
-                        // echo $_GET['id'];
-                        // echo $_SESSION['id'];
-
-                        $addquerry = "insert into comment_tbl(recipe_id,user_id,comment,comment_date,ratings)values('$_GET[id]',' $_SESSION[id]','$comment','$date','$ratings')";
-                        $iquery = mysqli_query($conn, $addquerry);
-
-
-
-                        if ($iquery) { ?>
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                your comment is being review...
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-
-                        <?php  } else { ?>
-
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                Make sure the field is not empty
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                    <?php }
-                    }
-
-                    ?>
-                    <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
-                        <div style="width: 150px;" class="align-items-start justify-content-center">
-                            <div style="height: 40px; width: 40px ; margin-left:40px;" class="d-flex justify-content-center align-items-center">
-                                <img src="../assets/images/user.png" width="100%" height="100%" alt="profile-user">
-
-                                <?php
-                                if (!isset($_SESSION['id'])) { ?>
-                                    <span class="pl-2"></span>
-                                <?php    } else { ?>
-
-                                    <span class="pl-2">Name: <?= $_SESSION['username'] ?></span>
-                                <?php }
-
-                                ?>
-
-                            </div>
-                        </div>
-                        <div class=" w-100 mt-2" id="comment">
-                            <form method="POST" enctype="multipart/form-data">
-
-                                <div class="d-flex flex-row mt-2 justify-content-between">
-
-                                    <!-- <label class="form-label" for="">Rate: </label> -->
-                                    <select style="width: 80px; " class=" form-control" id="exampleFormControlSelect1" name="ratings">
-                                        <?php
-                                        $rate;
-                                        for ($rate = 1; $rate <= 5; $rate++) { ?>
-
-                                            <option value=" <?= $rate ?>"><?= $rate ?></option>
-                                        <?php  } ?>
-
-
-                                    </select>
-
-
-                                    <?php
-                                    $star;
-                                    for ($star = 1; $star <= 5; $star++) { ?>
-                                        <div style=" width: 28px; height: 18px;margin:2px;">
-
-                                            <a href=""> <img width="100%" height="100%" src=" ../../server/uploads/images/star.png " alt=" ratings"></a>
-                                            <!-- <span style="margin-left: 10px;"><?php echo $star ?></span> -->
-
-                                        </div>
-
-                                    <?php  } ?>
-
-                                </div>
-
-
-                                <div class="form-group m-0">
-                                    <label class="form-label" for=""></label>
-
-                                    <textarea name="comment" id="" required class="form-control" cols="10" placeholder="type comment..." rows="3"></textarea>
-                                </div>
-                                <div class="form-group " style="float: right; margin-top:15px;">
-
-                                    <?php
-                                    if (!isset($_SESSION['id'])) { ?>
-                                        <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                                            Sign-In First
-                                        </button> -->
-                                        <a href="login.php">Sign-In First</a>
-                                    <?php  } else { ?>
-
-                                        <input type="submit" value="Submit" name="submit" class="btn btn-info">
-                                    <?php }
-
-                                    ?>
-
-
-                                </div>
-                            </form>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-
-                        <?php
-                        if (isset($_POST["submitUser"])) {
-
-                            $sql = "SELECT * from user_tbl";
-                            $result = $conn->query($sql);
-
-                            $username = $_POST['username'];
-                            $password = $_POST['password'];
-                            // echo $username;
-
-                            if ($result->num_rows > 0) {
-
-                                while ($row = $result->fetch_assoc()) {
-                                    if ($username == $row['username'] && $password == $row["password"]) {
-                                        $_SESSION['id'] = $row['user_id'];
-                                        $_SESSION['username'] = $row['username'];
-                                        $_SESSION['email'] = $row['email'];
-
-                                        // echo "<script type = \"text/javascript\">
-                                        // window.location = (\"recipe.php?id=$_GET[id]#comment\")
-                                        // </script>";
-                                    } else {
-                                    }
-                                }
-                            } else {
-                                echo "no records found";
-                            }
-                        }
-                        ?>
-                        <!-- Modal -->
-                        <div class="col-md-4">
-                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <form class="d-flex h-100 justify-content-center align-items-center flex-column" method="post" enctype="multipart/form-data">
-                                            <div class="modal-header">
-
-                                                <h1 class="text-dark modal-title" id="exampleModalLongTitle">Login</h1>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-
-
-                                                <div class="mb-3">
-                                                    <label for="Username" class="form-label">Username</label>
-                                                    <input type="text" class="form-control" id="Username" name="username" required placeholder="Username">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="Password" class="form-label">Password</label>
-                                                    <input type="password" class="form-control" id="Password" name="password" required placeholder="Password">
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <p>Don't have account? <a href="./register.php">Register</a></p>
-                                                </div>
-
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
-                                                <input type="submit" name="submitUser" value="Submit" class="btn btn-info" />
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <?php
-                $sql = "SELECT user_tbl.username, comment_tbl.comment, comment_tbl.comment_date, comment_tbl.ratings, comment_tbl.recipe_id, comment_tbl.comment_date 
-        FROM comment_tbl 
-        INNER JOIN user_tbl ON user_tbl.user_id = comment_tbl.user_id 
-        WHERE comment_tbl.recipe_id = '$_GET[id]' 
-        GROUP BY comment_tbl.comment_id 
-        LIMIT 2";
-                $result = $conn->query($sql);
-
-                if ($result->num_rows > 0) {
-                    // Output data of each row
-                    while ($row = $result->fetch_assoc()) {
-                ?>
-                        <div>
-                            <div style="width: 150px;" class="align-items-center justify-content-center mt-2">
-                                <div style="height: 40px; width: 40px; margin-left: 40px;" class="d-flex justify-content-center align-items-center">
-                                    <img src="../assets/images/user.png" width="100%" height="100%" alt="profile-user">
-                                    <span class="pl-2"><?= $row['username'] ?></span>
-                                </div>
-                            </div>
-                            <div class="w-100 mt-2">
-                                <div style="margin-left: 80px;">
-                                    <div class="d-flex justify-content-between">
-                                        <h6 class="m-0"><?= $row['comment'] ?></h6>
-                                        <div class="d-flex" style="float: right;">
-                                            <?php
-                                            if ($row['ratings'] != 0) {
-                                                for ($ratings = 1; $ratings <= $row['ratings']; $ratings++) {
-                                            ?>
-                                                    <div style="height: 15px;" class="mx-2">
-                                                        <img class="d-block image" src="../../server/uploads/images/star.png" alt="ratings">
-                                                    </div>
-                                                <?php
-                                                }
-                                                ?>
-                                                <span class="ml-4"><?= $row['comment_date'] ?></span>
-                                            <?php
-                                            }
-                                            ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <?php
-                    }
-                } else {
-                    ?>
-                    <div class="bg-light my-4 p-4">
-                        <h3 class="lead">No comments available</h3>
-                    </div>
-                <?php
-                }
-                ?>
-
-               
-                <div class="d-flex justify-content-center mt-4">
-                    <button type="button" class="btn btn-primary" onclick="showMoreComments()" id="show-more-button">Show More</button>
-                </div>
-
-                <script>
-                    var offset = 2; // Number of comments already shown
-
-                    function showMoreComments() {
-                        var xhttp = new XMLHttpRequest();
-                        xhttp.onreadystatechange = function() {
-                            if (this.readyState == 4 && this.status == 200) {
-                                var response = this.responseText;
-                                document.getElementById("comments-container").innerHTML += response;
-                                offset += 3; // Increase the offset by 3 for the next set of comments
-                            }
-                        };
-                        xhttp.open("GET", "recipe.php?id=<?php echo $_GET['id']; ?>&offset=" + offset, true);
-                        xhttp.send();
-                    }
-                </script>
 
             </div>
             <div class="col-md-2">
@@ -641,80 +831,7 @@ $_SESSION['mainIngridients'] = $arr1;
             </div>
             <div class="col-md-4">
 
-                <div class="section-header">
-                    <h1>Related Recipes</h1>
 
-                </div>
-                <div class="boxThumbnail">
-                    <div class="gridContainer">
-
-
-                        <?php
-                        $sql = "SELECT recipe_tbl.`title`, recipe_tbl.`date_created`,  recipe_tbl.`type`, recipe_tbl.`cuisine` , recipe_tbl.recipe_id, recipe_tbl.`description`, ratings_tbl.`ratings`, recipe_tbl.`image` FROM recipe_tbl LEFT JOIN ratings_tbl ON ratings_tbl.`recipe_id` = recipe_tbl.`recipe_id` where recipe_tbl.type = '$rowGlobal[type]' group by recipe_tbl.title limit 4";
-                        $result = $conn->query($sql);
-
-                        if ($result->num_rows > 0) {
-
-
-                            while ($row = $result->fetch_assoc()) {
-
-                                $sqlRatings = "   SELECT SUM(ratings) as totalRatings, COUNT(comment_id) as ratingID FROM comment_tbl where recipe_id = '$row[recipe_id]' ";
-                                $resultRatings = $conn->query($sqlRatings);
-                                $rowGlobalRatings = $resultRatings->fetch_assoc();
-
-                        ?>
-                                <div class="items">
-
-                                    <div class="item">
-
-                                        <a href="#">
-                                            <div class="badge">
-                                                <img src="../../server/assets/images/heart1.png" alt="First slide">
-                                            </div>
-                                        </a>
-                                        <a href="recipe.php?id=<?= $row['recipe_id'] ?>">
-                                            <img class="d-block w-100 image" src="<?= "../../server/uploads/images/$row[image]" ?>" alt="First slide">
-                                            <div class="title">
-                                                <div class="title-type">
-                                                    <span><?= $row['type'] ?></span><span class="date"><?= $row['date_created'] ?></span>
-                                                </div>
-                                                <h4><?= $row['title'] ?></h4>
-                                                <div class="d-flex align-items-center">
-                                                    <?php
-
-                                                    if ($rowGlobalRatings['totalRatings'] != 0) { ?>
-                                                        <?php for ($ratings = 1; $ratings <= round($rowGlobalRatings['totalRatings']   / $rowGlobalRatings['ratingID']); $ratings++) {
-
-
-                                                        ?>
-                                                            <div style="width: 35px; height: 28px;">
-                                                                <img class="d-block w-100 image" src="../../server/uploads/images/star.png " alt="ratings">
-                                                            </div>
-
-                                                        <?php     } ?>
-                                                        <?php if ($rowGlobalRatings['totalRatings'] != 0) { ?>
-                                                            <span class="text-dark pl-2"><?php echo round($rowGlobalRatings['totalRatings']   / $rowGlobalRatings['ratingID'], 1)  ?></span>
-                                                        <?php  } else {    ?>
-                                                            <span class="text-dark pl-2"></span>
-                                                        <?php    }
-                                                        ?>
-
-                                                    <?php  }
-                                                    ?>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-
-                                </div>
-                        <?php  }
-                        } else {
-                            echo "no records found";
-                        }
-                        $conn->close();
-                        ?>
-                    </div>
-                </div>
             </div>
 
 
@@ -735,6 +852,61 @@ $_SESSION['mainIngridients'] = $arr1;
                     }
                 };
                 xmlhttp.open("GET", "showMore.php", true);
+                xmlhttp.send();
+            }
+        }
+
+        function closeInput() {
+            let form = document.getElementById("form").style;
+            form.display = "none";
+        }
+
+        function inputForm(str) {
+            if (str.length == 0) {
+                document.getElementById("inputForm").innerHTML = "";
+                return;
+            } else {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("inputForm").innerHTML = this.responseText;
+                    }
+                };
+                xmlhttp.open("GET", "ajaxInput.php?commentId=" + str, true);
+                xmlhttp.send();
+            }
+        }
+
+        function likesUp(str) {
+            if (str.length == 0) {
+                document.getElementById("likes").value = "";
+                return;
+            } else {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        console.log(this.response);
+                        // document.getElementById("inputForm").innerHTML = this.responseText;
+                    }
+                };
+                xmlhttp.open("GET", "ajaxLikes.php?likeId=" + str, true);
+                xmlhttp.send();
+            }
+        }
+
+        function likesDown(str) {
+            if (str.length == 0) {
+                document.getElementById("likesDown").value = "";
+                return;
+            } else {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        console.log(this.response);
+                        // document.getElementById("inputForm").innerHTML = this.responseText;
+                    }
+                };
+                xmlhttp.open("GET", "ajaxLikes.php?likeDownId=" + str, true);
                 xmlhttp.send();
             }
         }
