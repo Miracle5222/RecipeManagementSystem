@@ -35,7 +35,7 @@ session_start();
                         <div class="form-group m-0 align-self-end ml-3">
                             <label class="form-label" for=""></label>
 
-                            <input type="submit" class="btn btn-outline-success" name="EditComment" value="send">
+                            <input type="submit" class="btn btn-outline-success" name="EditComment" value="Update">
                         </div>
 
                     </div>

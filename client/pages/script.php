@@ -1,4 +1,29 @@
 <script>
+    function updateMycomment(str) {
+
+        let data = JSON.parse(str);
+        // // Access individual elements of the array
+        // let number = data[0];
+        // let id = data[1];
+        console.log(data);
+
+        if (str.length == 0) {
+            // document.getElementById("textComment").innerHTML = "";
+            return;
+        } else {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("textComment").innerHTML = this.responseText;
+                }
+            };
+            xmlhttp.open("GET", "ajaxUpdateComment.php?mycomment=" + str, true);
+            xmlhttp.send();
+        }
+    }
+
+
+
     function addMore(str) {
         let data = JSON.parse(str);
         // Access individual elements of the array
@@ -51,6 +76,17 @@
             xmlhttp.open("GET", "ajaxMinus.php?addMore=" + number + "&id=" + id, true);
             xmlhttp.send();
         }
+    }
+
+
+    function closeEditComment() {
+        let form = document.getElementById("mycomment").style;
+        form.display = "none";
+    }
+
+    function openEditComment() {
+        let form = document.getElementById("mycomment").style;
+        form.display = "block";
     }
 
 

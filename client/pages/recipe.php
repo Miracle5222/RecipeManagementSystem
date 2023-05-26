@@ -342,7 +342,7 @@ $_SESSION['mainIngridients'] = $arr1;
                             $getUser = mysqli_query($conn, $selectUser);
 
                             if ($getUser->num_rows <= 0) {
-                                $addquerry = "insert into comment_tbl(recipe_id,user_id,comment,comment_date,ratings)values('$_GET[id]',' $_SESSION[id]','$comment','$date','$ratings')";
+                                $addquerry = "insert into comment_tbl(recipe_id,user_id,comment,comment_date,ratings,commentStatus)values('$_GET[id]',' $_SESSION[id]','$comment','$date','$ratings','Pending')";
                                 $iquery = mysqli_query($conn, $addquerry);
 
 
@@ -369,12 +369,12 @@ $_SESSION['mainIngridients'] = $arr1;
 
                                 }
                             } else { ?>
-                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <!-- <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                     You already commented on this recipe
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
-                                </div>
+                                </div> -->
                         <?php   }
 
 
@@ -525,10 +525,10 @@ $_SESSION['mainIngridients'] = $arr1;
 
 
                         <?php
-                        $sql = "SELECT user_tbl.username, comment_tbl.comment_id, comment_tbl.user_id,  comment_tbl.comment, comment_tbl.comment_date, comment_tbl.ratings, comment_tbl.recipe_id, comment_tbl.comment_date 
+                        $sql = "SELECT user_tbl.username, comment_tbl.comment_id, comment_tbl.commentStatus, comment_tbl.user_id,  comment_tbl.comment, comment_tbl.comment_date, comment_tbl.ratings, comment_tbl.recipe_id, comment_tbl.comment_date 
 FROM comment_tbl 
 INNER JOIN user_tbl ON user_tbl.user_id = comment_tbl.user_id 
-WHERE comment_tbl.recipe_id = '$_GET[id]' limit 1
+WHERE comment_tbl.recipe_id = '$_GET[id]' and comment_tbl.commentStatus = 'Active' limit 2
 
 ";
                         $result = $conn->query($sql);
@@ -626,7 +626,7 @@ WHERE comment_tbl.recipe_id = '$_GET[id]' limit 1
                                                     if ($sqlLikesResult->num_rows > 0) {
                                                         $rowLikes = $sqlLikesResult->fetch_assoc();
                                                     ?>
-                                                        <button class=" btn btn-outline-success px-lg-4  border-0" onclick="return alert('Sign-In First')" id="likes" value="<?= $row['comment_id'] ?>"><i class="bi bi-hand-thumbs-up d-flex justify-content-center align-items-center"> <?= $rowLikes['likes']; ?></i></button>
+                                                        <button class=" btn btn-outline-success px-lg-4  border-0" onclick="return alert('Sign-In First')" id="likes" value="<?= $row['comment_id'] ?>"><i class="bi bi-hand-thumbs-up d-flex justify-content-center align-items-center">&nbsp; <?= $rowLikes['likes']; ?></i></button>
                                                     <?php }
 
                                                     ?>
@@ -697,8 +697,13 @@ WHERE comment_tbl.recipe_id = '$_GET[id]' limit 1
                                         // echo "Error updating record: " . $conn->error;
                                     }
                                 }
-
+                                ?>
+                                <?php
                                 if (isset($_SESSION['id']) ==  $row['user_id']) { ?>
+                                    <div id="editForms">
+
+                                    </div>
+                                <?php  } else { ?>
                                     <div id="editForms">
 
                                     </div>
@@ -713,7 +718,7 @@ WHERE comment_tbl.recipe_id = '$_GET[id]' limit 1
 
 
                                 <?php
-                                $sqls = "  SELECT * FROM mycomments_tbl inner JOIN user_tbl ON user_tbl.`user_id` = mycomments_tbl.`user_id` WHERE mycomments_tbl.`comment_id` = '$row[comment_id]' limit 3";
+                                $sqls = "  SELECT * FROM mycomments_tbl inner JOIN user_tbl ON user_tbl.`user_id` = mycomments_tbl.`user_id` WHERE mycomments_tbl.`comment_id` = '$row[comment_id]'";
                                 $results = $conn->query($sqls);
 
                                 if ($results->num_rows > 0) {
@@ -742,7 +747,7 @@ WHERE comment_tbl.recipe_id = '$_GET[id]' limit 1
                                                                     <!-- <button class=" btn btn-success px-lg-4 mr-2" onclick="likesUp(this.value)" id="likes" value="<?= $row['comment_id'] ?>"><i class="bi bi-hand-thumbs-up d-flex justify-content-center align-items-center">1</i></button> -->
                                                                     <a href="ajaxInput.php?deleteComment=<?= $rows['userComment_Id'] ?>&recipeId=<?= $_GET['id'] ?>" class=" btn btn-outline-danger border-0 px-lg-4  mr-2"><i class="bi bi-trash3"></i></a>
                                                                     <!-- <button class=" btn btn-outline-danger px-lg-4 border-0 mr-2" onclick="deleteComment(this.value)" id="likesDown" value="<?= $rows['userComment_Id'] ?>"><i class="bi bi-trash3"></i></button> -->
-                                                                    <button class=" btn btn-outline-info px-2  border-0"><i class="bi bi-pencil-square d-flex justify-content-center align-items-center"> </i></button>
+                                                                    <button class=" btn btn-outline-info px-2  border-0" onclick="openEditComment()"><i class="bi bi-pencil-square d-flex justify-content-center align-items-center"> </i></button>
 
 
 
@@ -759,7 +764,7 @@ WHERE comment_tbl.recipe_id = '$_GET[id]' limit 1
                                             <div class="w-100 mt-4">
                                                 <div style="margin-left: 120px;" class="bg-light p-3">
                                                     <div class="d-flex justify-content-between">
-                                                        <span class="lead"><?= $rows['mycomment'] ?></span>
+                                                        <span class="lead" id="textComment"><?= $rows['mycomment'] ?></span>
                                                         <div class="d-flex" style="float: right;">
 
                                                             <span class="ml-4"><?= $rows['comment_date'] ?></span>
@@ -767,8 +772,61 @@ WHERE comment_tbl.recipe_id = '$_GET[id]' limit 1
                                                         </div>
 
                                                     </div>
+                                                    <?php
+
+                                                    if (isset($_POST['updateComment'])) {
+
+                                                        $userCommentId = $_POST['commentId'];
+                                                        $comment = $_POST['comment'];
+
+                                                        $sql = "UPDATE mycomments_tbl SET mycomment=' $comment' WHERE userComment_Id = '$userCommentId '";
+
+                                                        if ($conn->query($sql) === TRUE) {
+                                                            // echo "Record updated successfully";
+                                                            // header("Location: redirect.php?id=$_GET[id]");
+                                                        } else {
+                                                            // echo "Error updating record: " . $conn->error;
+                                                        }
+                                                    }
+                                                    ?>
+                                                    <?php if (isset($_SESSION['id']) ==  $rows['user_id']) {
+
+
+
+
+
+                                                    ?>
+                                                        <div id="editSubComment">
+                                                            <form method="POST" enctype="multipart/form-data" id="mycomment" style="display:none;">
+                                                                <div class="d-flex m justify-content-between align-items-center">
+                                                                    <div class="form-group m-0 w-100 " style="display:none;">
+                                                                        <label class="form-label" for=""></label>
+                                                                        <input type="text" value="<?= $rows['userComment_Id'] ?>" name="commentId" required>
+
+                                                                    </div>
+                                                                    <div class="form-group m-0 w-100">
+                                                                        <label class="form-label" for=""></label>
+                                                                        <input type="text" value="<?= $rows['mycomment'] ?>" class="form-control" name="comment" required>
+                                                                        <!-- <textarea name="comment" id="" required class="form-control" cols="10" placeholder="type comment..." onkeyup="updateMycomment(this.value)" value="<?= htmlspecialchars($dataJson1); ?>" rows="1"></textarea> -->
+                                                                    </div>
+                                                                    <div class="form-group m-0 align-self-end ml-3">
+                                                                        <label class="form-label" for=""></label>
+
+                                                                        <input type="submit" class="btn btn-outline-success" name="updateComment" value="updateComment">
+                                                                    </div>
+                                                                    <div class="form-group m-0 align-self-end ml-3">
+                                                                        <label class="form-label" for=""></label>
+                                                                        <button class="btn btn-outline-danger" onclick="closeEditComment()">Close</button>
+                                                                        <!-- <input type="submit" class="btn btn-outline-danger" name="updateComment" value="Close"> -->
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    <?php    } ?>
                                                 </div>
+
                                             </div>
+
 
 
                                         </div>
@@ -797,7 +855,7 @@ WHERE comment_tbl.recipe_id = '$_GET[id]' limit 1
                 $data = array(10, $_GET['id']);
                 $dataJson = json_encode($data);
 
-                $data1 = array(2, $_GET['id']);
+                $data1 = array(1, $_GET['id']);
                 $dataJson1 = json_encode($data1);
                 ?>
                 <div class="d-flex justify-content-center">
